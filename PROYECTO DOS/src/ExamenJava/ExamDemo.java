@@ -21,7 +21,7 @@ public class ExamDemo {
 		Exam examen = new Exam();
 		complementos menuExam = new complementos();
 		// ----------------------------------------Agrega preguntas-----------------------------------------------
-		examen.agregaPregunta(new TFpreguntas("Los cojines de aire (air bags) reemplazan ventajosamente al cinturón de seguridad Los cojines de aire (air bags) reemplazan ventajosamente al cinturón de seguridad Los cojines de aire (air bags) reemplazan ventajosamente al cinturón de seguridad Los cojines de aire (air bags) reemplazan ventajosamente al cinturón de seguridad Los cojines de aire (air bags) reemplazan ventajosamente al cinturón de seguridad Los cojines de aire (air bags) reemplazan ventajosamente al cinturón de seguridad", false, 1));
+		examen.agregaPregunta(new TFpreguntas("Los cojines de aire (air bags) reemplazan ventajosamente al cinturón de seguridad ", false, 1));
 		String pregElec[] = { "Chile", "Mexico", "Argentina", "Peru", "Colombia" };
 		examen.agregaPregunta(new Selec_Mul_Pregunta("¿En qué país se encuentra ubicada la Casa Rosada? ", pregElec, 2, 1));
 		examen.agregaPregunta(new Resp_Cortas_Pregunta("¿Qué tipo de animal es la ballena?", "Mamifero", 1));
@@ -33,7 +33,7 @@ public class ExamDemo {
 		examen.agregaPregunta(new Selec_Mul_Pregunta("La mayor parte de los accidentes de tránsito se produce en:", pregElec3, 2, 1));
 		examen.agregaPregunta(new Resp_Cortas_Pregunta("¿Quién escribió La Odisea?", "Homero", 1));
 		examen.agregaPregunta(new TFpreguntas("Japon fue el pais que uso la primera bomba atomica", true, 1));
-		String pregElec4[] = { "Mario Vargas Llosa", "Gabriel Garcia Marquez", "Camilo Jose Cela" };
+		String pregElec4[] = { "Mario Vargas Llosa", "Gabriel Garcia Marquez", "Camilo Jose Cela","Mario Vargas Llosa" };
 		examen.agregaPregunta(new Selec_Mul_Pregunta("¿Quién escribió Cien años de soledad?", pregElec4, 1, 1));
 		
 		// -------------------------------------------------------------------------------------------------------
