@@ -40,7 +40,7 @@ public class TFpreguntas extends Pregunta {
 			} else if (!(rango(opcionUsuario)) && Exam.Intentos == 1) {
 				System.err.println("\nDemasiados intentos fallidos. VALLA A ESTUDIAR!");
 				complementos menuExam = new complementos();
-				Exam.preg_sinTerminar= Exam.getTotalPreguntas()- Exam.numPreg;
+				//Exam.preg_sinTerminar= Exam.getTotalPreguntas()- Exam.numPreg;
 				menuExam.despedida(0, 2);
 				System.exit(0);
 			}

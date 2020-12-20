@@ -1,7 +1,10 @@
 package ExamenJava;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Scanner;
 
 /**
  * Clase que brinda utilidades para el codigo.
@@ -30,7 +33,7 @@ public class complementos {
 				System.out.print("El nombre tiene caracteres que NO son letras\nIngrese su nombre nuevamente: ");
 			}	
 		}
-		System.out.println("\n" +Exam.nombre+", el examen consiste de " + Exam.getTotalPreguntas()+ " preguntas.\n\n\"Verdadero o falso\" \n\"Selección multiple\" \n\"Respuesta corta\" \n\nCada respuesta correcta equivale a 1 punto,\nsiendo " + Exam.getTotalPreguntas()+ " el puntaje maximo.\nAl completar el examen se le entregara su resultado,\neste, será expresado en forma de porcentaje\ny será guardado para analizarlos posteriormente.");
+		//System.out.println("\n" +Exam.nombre+", el examen consiste de " + Exam.getTotalPreguntas()+ " preguntas.\n\n\"Verdadero o falso\" \n\"Selección multiple\" \n\"Respuesta corta\" \n\nCada respuesta correcta equivale a 1 punto,\nsiendo " + Exam.getTotalPreguntas()+ " el puntaje maximo.\nAl completar el examen se le entregara su resultado,\neste, será expresado en forma de porcentaje\ny será guardado para analizarlos posteriormente.");
 		System.out.println("\nPresione \"Enter\" para iniciar");
 		new Scanner(System.in).nextLine(); // Linea vacia;
 	}

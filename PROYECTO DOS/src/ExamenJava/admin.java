@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class admin {
+	
+	
 	private String claveAdmin = "melopomelo";
 	public int intentos = 3;
 	private static ArrayList<profesor> profesores = new ArrayList<profesor>();
@@ -34,8 +36,8 @@ public class admin {
 	}
 
 
-	public static void setProfesores(ArrayList<profesor> profesores) {
-		admin.profesores = profesores;
+	public void setProfesores(ArrayList<profesor> profesores) {
+		this.profesores = profesores;
 	}
 
 	public void agregarProfesore() {

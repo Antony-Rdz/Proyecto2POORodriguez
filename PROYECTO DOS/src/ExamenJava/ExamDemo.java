@@ -1,8 +1,5 @@
 package ExamenJava;
 
-import java.io.File;
-
-
 /**
  * Clase testeadora del examen
  * 
@@ -10,7 +7,9 @@ import java.io.File;
  *
  */
 public class ExamDemo {
-
+	
+	Exam examem;
+	
 	/**
 	 * Metodo principal que consta de un pequeño menú para el usuario. Aca tambien
 	 * se agregan las preguntas que tendra el examen.
@@ -19,14 +18,16 @@ public class ExamDemo {
 	 */
 	public static Exam retornaexamen() {
 		Exam examen = new Exam();
-		complementos menuExam = new complementos();
+		
+		
+		//complementos menuExam = new complementos();
 		// ----------------------------------------Agrega preguntas-----------------------------------------------
 		examen.agregaPregunta(new TFpreguntas("Los cojines de aire (air bags) reemplazan ventajosamente al cinturón de seguridad ", false, 1));
-		String pregElec[] = { "Chile", "Mexico", "Argentina", "Peru", "Colombia" };
+		String pregElec[] = { "Chile", "Mexico", "Argentina", "Peru", "Colombia", "Colombia" };
 		examen.agregaPregunta(new Selec_Mul_Pregunta("¿En qué país se encuentra ubicada la Casa Rosada? ", pregElec, 2, 1));
 		examen.agregaPregunta(new Resp_Cortas_Pregunta("¿Qué tipo de animal es la ballena?", "Mamifero", 1));
 		examen.agregaPregunta(new TFpreguntas("El francés es idioma oficial en Haití", true, 1));
-		String pregElec2[] = { "1942", "1947", "1943","1945" };
+		String pregElec2[] = { "1942", "1947", "1943","1945","1945","1945" };
 		examen.agregaPregunta(new Selec_Mul_Pregunta("¿Cuándo terminó la II Guerra Mundial?", pregElec2, 3, 1));
 		examen.agregaPregunta(new Resp_Cortas_Pregunta("¿Cuál es el río más largo del mundo?", "Amazonas", 1));
 		String pregElec3[] = { "Salidas de colegio ", "Carreteras", "Intersecciones en ciudad", "Caminos rurales" };
@@ -40,56 +41,10 @@ public class ExamDemo {
 		
 		return examen;
 		
-		
-		/*int opcion = 0;// para entrar en el menú
-		boolean auxiliar = true;
-		do {
-			while (auxiliar) {// while true mientras que el usuario ingrese opciones no validas.
-				try {
-					System.out.print("MenuExam v1.6\t\t\t\t\tby Antony R.\n\n¿Que desea hacer?\n-ADMIN (0)\n-Realizar el examen (1)\n-Ver tabla de resultados (2)\n-Menu profesor (3)\n-Salir (4)\nElija: ");
-					opcion = Integer.parseInt(complementos.leerDeTeclado());
-					while (opcion > 4) { // si ingresa un numero mayor que el numero de opciones.
-							System.err.println("\nOpcion no valida..\n");//fuera del rango de opciones
-							System.out.print("MenuExam v1.6\t\t\t\t\tby Antony R.\n\n¿Que desea hacer?\n\n-Realizar el examen (1)\n-Ver tabla de resultados (2)\n-Salir (3)\nElija: ");
-							opcion = Integer.parseInt(complementos.leerDeTeclado());
-					}
-					auxiliar = false;
-				} catch (Exception e) {
-					System.err.println("\nOpcion no valida..\n");//si ingresa letras
-				}
-			}
-			auxiliar = true;
-			switch (opcion) {
-			case 0:{
-				menus nuevoMenus = new menus();
-				nuevoMenus.menuAdmin();
-				break;
-			}
-			case 1: { // 1 Para realizar el examen
-				menuExam.presentacion();
-				int puntaje = examen.darExam();
-				System.out.println("**********************");
-				System.out.println("* ¡EXAMEN TERMINADO! *\n*  Su puntaje = " + puntaje + "%  *");
-				System.out.println("**********************");
-				System.out.print("\n\n_______________________");
-				menuExam.despedida(puntaje, 1);
-				System.exit(0);
-			}
-			case 2: { // 2 Para ver la tabla de puntuaciones
-				archivos score = new archivos();
-				score.leerArchivo(new File("C:\\Users\\Anton\\eclipse-workspace\\Proyecto Uno\\src\\Resultados Examen\\Score.txt"));
-				break;
-			}
-			case 3:{
-				menus nuevoMenus = new menus();
-				nuevoMenus.menuProfesor();
-				break;
-			}
-			case 4: { // 4 Salir del programa
-				System.err.println("\nAdios...");
-				break;
-			}
-			}
-		} while (opcion != 4);*/
 	}
+	
+	
+	
+		
+		
 }

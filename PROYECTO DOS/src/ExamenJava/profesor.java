@@ -1,52 +1,39 @@
 package ExamenJava;
 
-import java.util.*;
+import java.util.ArrayList;
 
 public class profesor {
 
 	private String rutProfesor;
-
+	private String Nombre;
+	private String Apellido;
+	
+	private ArrayList<estudiante> estudiantes;
+	
+	
 	public profesor(String rutProfesor) {
 		this.rutProfesor = rutProfesor;	
 	}
-	//private static ArrayList<String> profesores = new ArrayList<String>();
-
-
-
-	/*public static ArrayList<String> getProfesores() {
-		return profesores;
+	
+	
+	public String getNombre() {
+		return Nombre;
 	}
 
-	public static void setProfesores(ArrayList<String> profesores) {
-		profesor.profesores = profesores;
-	}*/
 
-	/*public static void menuProfesor() {
-		int eleccion = 0;
-		do {
-			System.out.print("Que desea hacer?\n 1)Iniciar Sesion\n2)Volver\nELIJA: ");
-			eleccion = Integer.parseInt(complementos.leerDeTeclado());
-			while (eleccion > 2) {
-				System.err.println("Opcion fuera de rango\n");
-				System.out.print("Que desea hacer?\n 1)Ingresar\n2)Volver\nELIJA: ");
-				eleccion = Integer.parseInt(complementos.leerDeTeclado());
-			}
-			switch (eleccion) {
-			case 1: {
-				System.out.println("Ingrese rut de profesor");
-				String rut = complementos.leerDeTeclado();
-				if (ingresoProfesor(rut)) {
-					System.out.println("Bienvenido\n");
+	public void setNombre(String nombre) {
+		Nombre = nombre;
+	}
 
-				} else {
-					System.err.println("RUT INCORRECTO");
-				}
-				break;
-			}
-			}
-		} while (eleccion != 2);
 
-	}*/
+	public String getApellido() {
+		return Apellido;
+	}
+
+
+	public void setApellido(String apellido) {
+		Apellido = apellido;
+	}
 	
 	public String getRutProfesor() {
 		return rutProfesor;

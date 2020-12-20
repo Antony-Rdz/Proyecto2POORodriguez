@@ -1,13 +1,13 @@
 package ExamenJava;
 
-import java.util.*;
+import java.util.ArrayList;
 
 public class estudiante implements Comparable <estudiante>{
 	private String nombre;
 	private int nota;
 	private int preg_buenas;
 	private int preg_malas;
-	
+	private ArrayList<Pregunta> preguntasDelExamen;
 	
 	public estudiante(String nombre, int nota, int preg_buenas, int preg_malas) {
 		this.nombre = nombre;
@@ -48,6 +48,15 @@ public class estudiante implements Comparable <estudiante>{
 		this.preg_malas = preg_malas;
 	}
 
+	
+	public ArrayList<Pregunta> getPreguntasDelExamen() {
+		return preguntasDelExamen;
+	}
+
+	public void setPreguntasDelExamen(ArrayList<Pregunta> preguntasDelExamen) {
+		this.preguntasDelExamen = preguntasDelExamen;
+	}
+
 	public String toString() {
 		return "Alumno: "+nombre+ " | Puntaje: "+nota+" | Preguntas Correctas: "+preg_buenas+" | Preguntas Incorrectas: "+preg_malas;
 	}
@@ -62,12 +71,12 @@ public class estudiante implements Comparable <estudiante>{
 		return 0;
 	}
 	
-	@SuppressWarnings("unused")
+	/*@SuppressWarnings("unused")
 	private class compararEstudiantes implements Comparator<estudiante>{
 		 public int compare(estudiante estudiante1, estudiante estudiante2) {
 		        return estudiante1.getNombre().compareToIgnoreCase(estudiante2.getNombre());
 		 }
-	}
+	}*/
 	
 	
 }

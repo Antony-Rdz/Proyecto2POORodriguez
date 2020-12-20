@@ -1,6 +1,11 @@
 package ExamenJava;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.OutputStreamWriter;
 
 /**
  * Clase que facilita la lectura y escritura en archivos.
@@ -57,7 +62,7 @@ public class archivos {
 				}
 				case 2: {	// 2 Si no completo el examen y se gastaron sus intentos.
 					BufferedWriter archivoEscribe = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(direccion, true), "utf-8"));
-					archivoEscribe.write("| "+nombre+" | ----NO COMPLETO " + Exam.preg_sinTerminar+ " DE "+Exam.getTotalPreguntas()+"----"+"\r\n");
+					//archivoEscribe.write("| "+nombre+" | ----NO COMPLETO " + Exam.preg_sinTerminar+ " DE "+Exam.getTotalPreguntas()+"----"+"\r\n");
 					archivoEscribe.close(); 
 					break;
 				}

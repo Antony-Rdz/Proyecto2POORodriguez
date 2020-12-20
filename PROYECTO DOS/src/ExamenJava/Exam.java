@@ -1,6 +1,6 @@
 package ExamenJava;
 
-import java.util.*;
+import java.util.ArrayList;
 
 /**
  * Clase que realiza el examen al usuario.
@@ -10,25 +10,26 @@ import java.util.*;
  */
 public class Exam {
 	static String nombre = null;
-	public static ArrayList<almacen> almacenDePregunta = new ArrayList<almacen>(); // un arraylist que almacena todo
-																					// tipo de preguntas.
+	//public static ArrayList<almacen> almacenDePregunta = new ArrayList<almacen>(); // un arraylist que almacena todo															// tipo de preguntas.
 	public static ArrayList<estudiante> datosEstudiantes = new ArrayList<estudiante>();
 
 	public  ArrayList<Selec_Mul_Pregunta> selecmulpreg = new ArrayList<Selec_Mul_Pregunta>();
 	public ArrayList<TFpreguntas> tfpreg = new ArrayList<TFpreguntas>();
 	public  ArrayList<Resp_Cortas_Pregunta> rcpreg = new ArrayList<Resp_Cortas_Pregunta>();
+	public ArrayList<Object> Inventario = new ArrayList<Object>();
 
 	public static int preg_buenas; // contador de buenas
 	public static int preg_malas; // contador de malas
 	public static int preg_sinTerminar;
 	public static int numPreg = 1, puntajeTotal = 0, Intentos = 5;
-
+	
 	/**
 	 * Agrega preguntas de seleccion multiple en el almacen de preguntas.
 	 * 
 	 * @param PreguntaSM Seleccion multiple
 	 */
 	public void agregaPregunta(Selec_Mul_Pregunta PreguntaSM) {
+		//Inventario.add(PreguntaSM);
 		selecmulpreg.add(PreguntaSM);
 		/*
 		 * almacen auxiliar = new almacen(PreguntaSM); almacenDePregunta.add(auxiliar);
@@ -41,6 +42,7 @@ public class Exam {
 	 * @param PreguntaTF True or false
 	 */
 	public void agregaPregunta(TFpreguntas PreguntaTF) {
+		//Inventario.add(PreguntaTF);
 		tfpreg.add(PreguntaTF);
 		/*
 		 * almacen auxiliar = new almacen(PreguntaTF); almacenDePregunta.add(auxiliar);
@@ -53,6 +55,7 @@ public class Exam {
 	 * @param PreguntaRC Resspuestas cortas
 	 */
 	public void agregaPregunta(Resp_Cortas_Pregunta PreguntaRC) {
+		//Inventario.add(PreguntaRC);
 		rcpreg.add(PreguntaRC);
 		/*
 		 * almacen auxiliar = new almacen(PreguntaRC); almacenDePregunta.add(auxiliar);
@@ -106,9 +109,9 @@ public class Exam {
 	 * 
 	 * @return int
 	 */
-	public static int getTotalPreguntas() {
+	/*public static int getTotalPreguntas() {
 		return almacenDePregunta.size();
-	}
+	}*/
 
 	public int darExam() {
 		for (int i = 0; i < selecmulpreg.size(); i++) {
@@ -129,6 +132,28 @@ public class Exam {
 		return (int) (((double) puntajeTotal / (selecmulpreg.size()+ rcpreg.size()+tfpreg.size())) * 100);
 	}
 
+	/*public int darExam() {
+		
+		for(int i = 0; i< Inventario.size();i++) {
+			if(Inventario.get(i) instanceof Selec_Mul_Pregunta) {
+				if(((Selec_Mul_Pregunta) Inventario.get(i)).buscar()) {
+					puntajeTotal += selecmulpreg.get(i).getPeso();
+				}
+			}
+			if(Inventario.get(i) instanceof Resp_Cortas_Pregunta) {
+				if(((Resp_Cortas_Pregunta) Inventario.get(i)).buscar()) {
+					puntajeTotal += rcpreg.get(i).getPeso();
+				}
+			}
+			if(Inventario.get(i) instanceof TFpreguntas) {
+				if(((TFpreguntas) Inventario.get(i)).buscar()) {
+					puntajeTotal += tfpreg.get(i).getPeso();
+				}
+			}
+		}
+		return (int) (((double) puntajeTotal / (selecmulpreg.size()+ rcpreg.size()+tfpreg.size())) * 100);
+	}*/
+	
 	/**
 	 * Metodo que realiza el examen, realiza las preguntas en el orden que fueron
 	 * agregadas retorna el puntaje obtenido tras su ejecucion.

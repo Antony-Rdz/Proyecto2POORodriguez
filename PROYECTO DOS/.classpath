@@ -8,5 +8,7 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="C:/Users/Anton/eclipse-workspace/DatosExamen/src/Libs/PlaceHolder.jar"/>
 	<classpathentry kind="lib" path="C:/Program Files (x86)/MySQL/Connector J 5.1/mysql-connector-java-5.1.49.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Anton/git/Proyecto2POORodriguez/PROYECTO DOS/Libs/flatlaf-0.45.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Anton/git/Proyecto2POORodriguez/PROYECTO DOS/Libs/flatlaf-intellij-themes-0.45.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
