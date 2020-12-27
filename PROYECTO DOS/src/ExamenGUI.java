@@ -10,6 +10,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.ArrayList;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -32,14 +33,14 @@ import javax.swing.border.EmptyBorder;
 
 import com.formdev.flatlaf.intellijthemes.FlatCarbonIJTheme;
 
-import ExamenJava.Exam;
-import ExamenJava.ExamDemo;
-import ExamenJava.Resp_Cortas_Pregunta;
-import ExamenJava.Selec_Mul_Pregunta;
-import ExamenJava.TFpreguntas;
+import Controlador.ExamDemo;
+import Controlador.Resp_Cortas_Pregunta;
+import Controlador.Selec_Mul_Pregunta;
+import Controlador.TFpreguntas;
 
 @SuppressWarnings("serial")
 public class ExamenGUI extends JFrame {
+	
 	JPanel panelMaster;
 	JPanel panelEnunciado;
 	JTextPane textEnunciado;
@@ -52,7 +53,7 @@ public class ExamenGUI extends JFrame {
 	JLabel labelCantidadPreguntas;
 	JLabel labelTiempo;
 	ButtonGroup grupoDeBotones;
-	Exam examen;
+	Controlador.Exam examen;
 	private String[] respuestaSeleccionada;
 	private ArrayList<JRadioButton> botonesSelecMult;
 	private ArrayList<JRadioButton> botonesTF;
@@ -108,8 +109,10 @@ public class ExamenGUI extends JFrame {
 	}
 
 	public JPanel iniciador() {
+		
 		tiempo = new Timer(1000, acciones);
 		tiempo.start();
+		
 		examen = ExamDemo.retornaexamen();
 		
 		respuestaSeleccionada = new String[examen.selecmulpreg.size() + examen.tfpreg.size() + examen.rcpreg.size()];
@@ -126,6 +129,7 @@ public class ExamenGUI extends JFrame {
 		panelIniciador.add(Box.createRigidArea(new Dimension(0, 30)));
 
 		JPanel panelContenedorPregunta = new JPanel();
+		panelContenedorPregunta.setBorder(BorderFactory.createLineBorder(new Color(33, 48, 71), 2, true));
 		panelContenedorPregunta.setLayout(new BoxLayout(panelContenedorPregunta, BoxLayout.Y_AXIS));
 		panelIniciador.add(panelContenedorPregunta);
 
@@ -200,7 +204,7 @@ public class ExamenGUI extends JFrame {
 
 		/************************* PANEL DEL ENUNCIADO ******************************/
 		panelEnunciado = new JPanel();
-		panelEnunciado.setBackground(Color.WHITE);
+
 		panelEnunciado.setBorder(new EmptyBorder(0, 0, 0, 0));
 		panelContenedorPregunta.add(panelEnunciado, BorderLayout.NORTH);
 
@@ -222,7 +226,7 @@ public class ExamenGUI extends JFrame {
 		panelContenedorRespuestasAbsoluto.setBorder(new EmptyBorder(25, 70, 30, 70));
 		panelContenedorRespuestasAbsoluto.setLayout(new CardLayout(0, 0));
 
-		panelRespuestaSelecMultiple = new JPanel(new GridLayout(5, 4, 10, 30));
+		panelRespuestaSelecMultiple = new JPanel(new GridLayout(5, 4, 50, 30));
 		agregaBotonesDinamicoSelecMult(examen.selecmulpreg.get(iterador));
 		panelContenedorRespuestasAbsoluto.add(panelRespuestaSelecMultiple, "seleccionMultiple");
 

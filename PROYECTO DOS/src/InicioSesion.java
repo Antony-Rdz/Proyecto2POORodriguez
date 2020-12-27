@@ -8,7 +8,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Enumeration;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -16,7 +15,6 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.SwingConstants;
@@ -29,11 +27,7 @@ public class InicioSesion extends JFrame {
 
 	private JPanel PanelMayorInicioSesion;
 
-	AdminGUI admSesion;
 
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
 
 		try {
@@ -77,7 +71,7 @@ public class InicioSesion extends JFrame {
 			public void keyReleased(KeyEvent e) {
 				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
 					dispose();
-					admSesion = new AdminGUI();
+					new AdminGUI();
 				}
 			}
 		});
@@ -101,21 +95,19 @@ public class InicioSesion extends JFrame {
 		JButton botonSiguiente = new JButton("Iniciar");
 		botonSiguiente.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				JRadioButton jrb = getSelection(grupoelecciones);
-				if(jrb == eleccionAdmin) {
+				if(eleccionAdmin.isSelected()) {
 					dispose();
-					admSesion = new AdminGUI();
+					new AdminGUI();
 				}
-				if(jrb == eleccionAlumno) {
-					JOptionPane.showMessageDialog(null, "inicio sesion alaumno");
+				if(eleccionAlumno.isSelected()) {
+					dispose();
+					new AlumnoGUI();
 					
 				}
-				if(jrb == eleccionProfe) {
+				if(eleccionProfe.isSelected()) {
 					dispose();
-					ProfesorGUI profe = new ProfesorGUI();
-					//JOptionPane.showMessageDialog(null, "inicio sesion profe");
+					new ProfesorGUI();
 				}
-
 			}
 		});
 		botonSiguiente.setFont(new Font("Tahoma", Font.PLAIN, 18));
@@ -133,9 +125,7 @@ public class InicioSesion extends JFrame {
 		return panelContenedor;
 	}
 
-	/**
-	 * Create the frame.
-	 */
+	
 	public InicioSesion() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		PanelMayorInicioSesion = new JPanel();
@@ -150,7 +140,7 @@ public class InicioSesion extends JFrame {
 
 	}
 
-	public static JRadioButton getSelection(ButtonGroup group) {
+	/*public static JRadioButton getSelection(ButtonGroup group) {
 		for (Enumeration e = group.getElements(); e.hasMoreElements();) {
 			JRadioButton b = (JRadioButton) e.nextElement();
 			if (b.getModel() == group.getSelection()) {
@@ -158,5 +148,5 @@ public class InicioSesion extends JFrame {
 			}
 		}
 		return null;
-	}
+	}*/
 }

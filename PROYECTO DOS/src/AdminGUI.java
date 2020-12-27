@@ -38,8 +38,6 @@ import com.formdev.flatlaf.intellijthemes.FlatCarbonIJTheme;
 import com.mysql.jdbc.ResultSetMetaData;
 import com.placeholder.PlaceHolder;
 
-import ExamenJava.admin;
-
 public class AdminGUI extends JFrame {
 
 	int ancho = java.awt.Toolkit.getDefaultToolkit().getScreenSize().width;
@@ -76,7 +74,8 @@ public class AdminGUI extends JFrame {
 	private JPasswordField textClave;
 	private JPasswordField textConfirmaClave;
 	private JButton btnVolver;
-	private admin adm;
+	//private admin adm;
+	private Controlador.admin adm;
 	private InicioSesion InicSes;
 	private JTable tablaDatosProfesores;
 	int cantidadFilas = 0;
@@ -117,12 +116,11 @@ public class AdminGUI extends JFrame {
 		panelMayorRegistro.setLayout(new BoxLayout(panelMayorRegistro, BoxLayout.Y_AXIS));
 		setContentPane(panelMayorRegistro);
 		// panelMayorRegistro.add(agregaPorfesor());
-		 panelMayorRegistro.add(inicioSesionPanel());
-		//panelMayorRegistro.add(MenuAdmin());
-		setResizable(false);
+		// panelMayorRegistro.add(inicioSesionPanel());
+		panelMayorRegistro.add(MenuAdmin());
 		pack();
+		setResizable(false);
 		setLocationRelativeTo(null);
-		System.out.println(getSize());
 		setVisible(true);
 
 	}
@@ -147,7 +145,7 @@ public class AdminGUI extends JFrame {
 	}
 
 	public JPanel inicioSesionPanel() {
-		adm = new admin();
+		adm = new Controlador.admin();
 		JPanel IniciadorInicioSesionAdmin = new JPanel();
 		IniciadorInicioSesionAdmin.setBorder(new EmptyBorder(3, 3, 3, 3));
 		IniciadorInicioSesionAdmin.setLayout(new BoxLayout(IniciadorInicioSesionAdmin, BoxLayout.Y_AXIS));
@@ -191,8 +189,8 @@ public class AdminGUI extends JFrame {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					if (verificaAdm(clave)) {
 						panelMayorRegistro.removeAll();
-						panelMayorRegistro.repaint();
 						panelMayorRegistro.add(MenuAdmin());
+						panelMayorRegistro.updateUI();
 						pack();
 						setLocationRelativeTo(null);
 					} else {
@@ -214,9 +212,9 @@ public class AdminGUI extends JFrame {
 					clave += c;
 				}
 				if (verificaAdm(clave)) {
-					panelMayorRegistro.removeAll();
-					panelMayorRegistro.repaint();
-					panelMayorRegistro.add(agregaPorfesor());
+					panelMayorRegistro.removeAll();					
+					panelMayorRegistro.add(MenuAdmin());
+					panelMayorRegistro.updateUI();
 					pack();
 					setLocationRelativeTo(null);
 				} else {
@@ -417,8 +415,11 @@ public class AdminGUI extends JFrame {
 	public JPanel MenuAdmin() {
 
 		JPanel panelContenedorMenu = new JPanel(new BorderLayout());
+		panelContenedorMenu.setBorder(new EmptyBorder(20, 0, 20, 20));
+		
 		JPanel panelContenedorDerecho = new JPanel(new BorderLayout());
 		JPanel panelContenedorIzquierdo = new JPanel(new BorderLayout());
+		panelContenedorIzquierdo.setBorder(new EmptyBorder(0, 30, 0, 30));
 
 		panelContenedorMenu.add(panelContenedorIzquierdo, BorderLayout.WEST);
 		panelContenedorMenu.add(panelContenedorDerecho, BorderLayout.CENTER);
@@ -427,7 +428,8 @@ public class AdminGUI extends JFrame {
 		JLabel lblImagenProfesor = new JLabel();
 		String ubicacionImagen="";
 		try {
-			ubicacionImagen = new File(".").getCanonicalPath() + "\\res\\admin.png";			
+			ubicacionImagen = new File(".").getCanonicalPath() + "\\res\\admin.png";	
+			
 		} catch (Exception e) {
 			System.out.println(e.toString());
 		}
@@ -438,7 +440,7 @@ public class AdminGUI extends JFrame {
 		JTabbedPane PanelControlador = new JTabbedPane();
 		panelContenedorDerecho.add(PanelControlador, BorderLayout.NORTH);
 
-		JPanel panelTablaDeDatos = new JPanel();
+		JPanel panelTablaDeDatos = new JPanel(new BorderLayout());
 		panelContenedorDerecho.add(panelTablaDeDatos, BorderLayout.CENTER);
 
 		JPanel panelBotones = new JPanel(new BorderLayout());
@@ -511,8 +513,8 @@ public class AdminGUI extends JFrame {
 		tablaDatosProfesores.getTableHeader().setReorderingAllowed(false);
 		tablaDatosProfesores.getTableHeader().setResizingAllowed(false);
 		JScrollPane scrollTabla = new JScrollPane(tablaDatosProfesores);
-		//scrollTabla.setPreferredSize(new Dimension(452, 200));
-		panelTablaDeDatos.add(scrollTabla);
+		scrollTabla.setPreferredSize(new Dimension(452, 200));
+		panelTablaDeDatos.add(scrollTabla,BorderLayout.CENTER);
 
 		JButton btnGuardar = new JButton("Guardar");
 		btnGuardar.addActionListener(new ActionListener() {
@@ -641,7 +643,7 @@ public class AdminGUI extends JFrame {
 	}
 
 	boolean verificaAdm(String clave) {
-		adm = new admin();
+		adm = new Controlador.admin();
 		if (clave.equalsIgnoreCase(adm.getClaveAdmin())) {
 			return true;
 		}
@@ -719,20 +721,18 @@ public class AdminGUI extends JFrame {
 		JLabel label = new JLabel("Contraseña de Administrador :");
 		label.setHorizontalAlignment(JLabel.LEFT);
 		label.setFont(new Font("Thaoma", Font.PLAIN, 14));
-		// Definimos el largo de la casilla para la contraseña
+
 		JPasswordField passwordField = new JPasswordField(15);
 		passwordField.setFont(new Font("Calibri", Font.BOLD, 14));
 		passwordField.setForeground(Color.BLACK);
 		passwordField.setBackground(Color.WHITE);
-		// Agregamos los componentes al panel
+		
 		panel.add(label);
 		panel.add(Box.createRigidArea(new Dimension(0, 10)));
 		panel.add(passwordField);
 
-		// Definimos el texto de las opciones para aceptar o cancelar
 		String[] options = new String[] { "Aceptar", "Cancelar" };
 
-		// Agregamos el panel y las opciones al dialogo
 		int option = JOptionPane.showOptionDialog(null, panel, "Ingreso de Contraseña", JOptionPane.NO_OPTION,
 				JOptionPane.PLAIN_MESSAGE, null, options, options[1]);
 
