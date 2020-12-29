@@ -10,7 +10,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -45,11 +48,20 @@ import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.category.DefaultCategoryDataset;
+
 import com.formdev.flatlaf.intellijthemes.FlatCarbonIJTheme;
 
 import Controlador.ConvierteExamenJson;
 import Controlador.Exam;
+import Controlador.FechaDeCreacion;
 import Controlador.FileSystemModel;
+import Controlador.JSONaExamen;
+import Controlador.ModeloNotasAlumno;
 import Controlador.Resp_Cortas_Pregunta;
 import Controlador.Selec_Mul_Pregunta;
 import Controlador.TFpreguntas;
@@ -61,11 +73,11 @@ public class ProfesorGUI extends JFrame {
 	static String nombreDelArchivo;
 	String rut;
 	JTextField textRut;
-
-	/**
-	 * Launch the application.
-	 */
-
+	int fila;
+	String ubicacionArchivos = "";
+	String nombreExamen = "";
+	JTable tablaDeExamenesNotas;
+	
 	public static void main(String[] args) {
 
 		try {
@@ -86,20 +98,13 @@ public class ProfesorGUI extends JFrame {
 		});
 	}
 
-	/**
-	 * Create the frame.
-	 */
-
+	
 	public ProfesorGUI() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		PanelMayorProfesor = new JPanel();
 		PanelMayorProfesor.setLayout(new BorderLayout(10, 10));
 		setContentPane(PanelMayorProfesor);
 		PanelMayorProfesor.add(inicioSesionProfesor());
-		//PanelMayorProfesor.add(MenuProfesor());
-		//PanelMayorProfesor.add(new CrearExamen());
-		// PanelMayorProfesor.add(ventanaColocaNombreArchivo());
-		//setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setResizable(false);
 		pack();
 		setLocationRelativeTo(null);
@@ -161,7 +166,18 @@ public class ProfesorGUI extends JFrame {
 		JMenu menuOpciones = new JMenu("Opciones");
 		barraOpciones.add(menuOpciones);
 		JMenuItem VolverOpcion = new JMenuItem("Volver");
+		VolverOpcion.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				dispose();
+				new InicioSesion();
+			}
+		});
 		JMenuItem SalirOpcion = new JMenuItem("Salir");
+		SalirOpcion.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				System.exit(0);
+			}
+		});
 		menuOpciones.add(VolverOpcion);
 		menuOpciones.add(SalirOpcion);
 	
@@ -222,7 +238,6 @@ public class ProfesorGUI extends JFrame {
 					PanelMayorProfesor.updateUI();
 					pack();
 					setLocationRelativeTo(null);
-
 				} else {
 					JOptionPane.showMessageDialog(null, "Rut o Contraseña Incorrecto");
 				}
@@ -261,13 +276,26 @@ public class ProfesorGUI extends JFrame {
 		JMenuBar barraOpciones = new JMenuBar();
 		panelContenedorMenu.add(barraOpciones, BorderLayout.NORTH);
 		JMenu menuOpciones = new JMenu("Opciones");
-		JMenu menuCreacion = new JMenu("Creación");
-		menuCreacion.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		menuOpciones.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		barraOpciones.add(menuOpciones);
-		barraOpciones.add(menuCreacion);
+		JMenu menuCreacion = new JMenu("Creación");
+		menuCreacion.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		barraOpciones.add(menuCreacion);		
 		JMenuItem VolverOpcion = new JMenuItem("Volver");
+		VolverOpcion.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				dispose();
+				new ProfesorGUI();
+			}
+		});
 		JMenuItem SalirOpcion = new JMenuItem("Salir");
+		SalirOpcion.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				System.exit(0);
+			}
+		});
 		VolverOpcion.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		SalirOpcion.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		menuOpciones.add(VolverOpcion);
@@ -314,28 +342,46 @@ public class ProfesorGUI extends JFrame {
 		JPanel panelArbolCarpetasCreaExamen = new JPanel(new BorderLayout(0, 10));
 		panelArbolCarpetasCreaExamen.setBorder(new EmptyBorder(10, 10, 10, 0));
 
-		String ubicacionArchivos = "";
+		
 		
 		try {
-			ubicacionArchivos = new File(".").getCanonicalPath() + "\\Profesor\\Examenes " + getProfesorName();
+			ubicacionArchivos = new File(".").getCanonicalPath() + "\\Profesor\\Examenes\\Examenes " + getProfesorName();
 			if (!new File(ubicacionArchivos).exists()) {
 				new File(ubicacionArchivos).mkdirs();
+			}
+			
+			if(!new File(new File(".").getCanonicalPath() + "\\Profesor\\Notas\\Notas " + getProfesorName()).exists()) {
+				new File(new File(".").getCanonicalPath() + "\\Profesor\\Notas\\Notas " + getProfesorName()).mkdirs();
 			}
 
 		} catch (Exception e) {
 			System.out.println(e.toString());
 		}
-		String ubicacionExamenes = ubicacionArchivos.substring(ubicacionArchivos.lastIndexOf('\\')+1);
+
 		JTree arbolCarpetas = new JTree();
 		Controlador.FileSystemModel modelo = new FileSystemModel(new File(ubicacionArchivos));
-		// System.out.println("El archivo se llama: "+modelo.getNombreArchivos(new File(ubicacionArchivos), 1));
 		arbolCarpetas.setModel(modelo);
 		
 		JScrollPane scrollArbol = new JScrollPane(arbolCarpetas);
 		panelCreacionExamen.add(scrollArbol, BorderLayout.CENTER);
 
-		JTable tablaDeExamenesNotas = new JTable();
+		tablaDeExamenesNotas = new JTable();
 		tablaDeExamenesNotas.setModel(encabezado());
+		llenaTablaDeExamenes(tablaDeExamenesNotas, ubicacionArchivos);
+		tablaDeExamenesNotas.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2) {
+					System.out.println("entre");
+					fila = tablaDeExamenesNotas.getSelectedRow();
+					PanelMayorProfesor.removeAll();
+					PanelMayorProfesor.add(tablaResultadosDeExamen());
+					PanelMayorProfesor.repaint();
+					pack();
+					setLocationRelativeTo(null);
+
+				}
+			}
+		});
 		tablaDeExamenesNotas.getColumnModel().getColumn(0).setPreferredWidth(300);
 		tablaDeExamenesNotas.getColumnModel().getColumn(1).setPreferredWidth(100);
 		tablaDeExamenesNotas.getTableHeader().setReorderingAllowed(false);
@@ -345,13 +391,221 @@ public class ProfesorGUI extends JFrame {
 
 		return panelContenedorMenu;
 	}
-
+	
+	
 	DefaultTableModel encabezado() {
-		String[] rubrosTablaProf = { "Nombre", "Fecha" };
+		String[] rubrosTablaProf = { "Nombre", "P1","P2","P3","P4","P5","Nota" };
 		DefaultTableModel tablaPorDefecto = new DefaultTableModel(rubrosTablaProf, 0);
 		return tablaPorDefecto;
 	}
+	
+	public JPanel tablaResultadosDeExamen(){
+		JTable tablaNotas = new JTable();
+		JPanel panelMaestroTabla = new JPanel(new BorderLayout(0,10));
+		JPanel panelMenu = new JPanel(new BorderLayout());
+		panelMaestroTabla.add(panelMenu,BorderLayout.NORTH);
+		JPanel panelTabla = new JPanel(new BorderLayout(0,10));
+		panelTabla.setBorder(new EmptyBorder(0, 20, 20, 20));
+		panelMaestroTabla.add(panelTabla,BorderLayout.CENTER);
+		
+		JMenuBar menuOpciones = new JMenuBar();
+		panelMenu.add(menuOpciones,BorderLayout.CENTER);
+		JMenu opciones = new JMenu("Opciones");
+		opciones.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		menuOpciones.add(opciones);
+		JMenu graficar = new JMenu("Graficar");
+		graficar.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		menuOpciones.add(graficar);
+		JMenuItem opcionVolver = new JMenuItem("Volver");
+		opcionVolver.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		opcionVolver.addActionListener(new ActionListener() {			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				System.out.println("entre acaa");
+				PanelMayorProfesor.removeAll();
+				PanelMayorProfesor.add(MenuProfesor());
+				PanelMayorProfesor.updateUI();
+				pack();
+				setLocationRelativeTo(null);
+			}
+		});
+		opciones.add(opcionVolver);
+		JMenuItem opcionGraficar = new JMenuItem("<html>Graficar resultados<br>del examen</html>");
+		opcionGraficar.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		opcionGraficar.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				if(tablaNotas!= null) {
+					System.out.println("tabla col: "+ tablaNotas.getColumnCount()+" filas: "+tablaNotas.getRowCount());
+					
+					panelMaestroTabla.add(graficarResultados(tablaNotas),BorderLayout.EAST);
+					panelMaestroTabla.updateUI();
+					pack();
+					setLocationRelativeTo(null);
+				}
+			}
+		});
+		graficar.add(opcionGraficar);
+		
+		
+		
+		tablaNotas.setPreferredSize(new Dimension(20,100));
+		tablaNotas.setModel(encabezado());
+		tablaNotas.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2) {
+					System.out.println("Datos ");
+					muestraDatosAlumno();
+				}
+			}
+		});
+		
+		JSONaExamen conversor = new JSONaExamen();
+		File archivos = new File(ubicacionArchivos);
+		String[] archivoElegido = archivos.list();
+		
+		Exam examen = new Exam();
+		try {
+			examen = conversor.generaExamen(new File(ubicacionArchivos+"\\"+archivoElegido[fila]));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+	
+		for(int i = 0; i< archivoElegido[fila].length();i++ ) {
+			if(archivoElegido[fila].charAt(i) != '.') {
+				nombreExamen += archivoElegido[fila].charAt(i);
+			}else {
+				break;
+			}
+		}
+		String ubicacion = "";
+		
+		try {
+			ubicacion = new File(".").getCanonicalPath() + "\\Profesor\\Notas\\Notas " + getProfesorName() +"\\Notas Examen "+ nombreExamen;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		llenaTablaDeAlumnos(tablaNotas,ubicacion,examen);
+		tablaNotas.getTableHeader().setReorderingAllowed(false);
+		tablaNotas.getTableHeader().setResizingAllowed(false);
+		JScrollPane scrolltabla = new JScrollPane(tablaNotas);
+		panelTabla.add(scrolltabla, BorderLayout.CENTER);
+		
+		JLabel labelInformacion = new JLabel("Notas del Examen: "+nombreExamen);
+		System.out.println("Name exam: "+nombreExamen);
+		nombreExamen = "";
+		
+		labelInformacion.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		labelInformacion.setHorizontalAlignment(SwingConstants.LEFT);
+		panelTabla.add(labelInformacion,BorderLayout.NORTH);
+	
+		return panelMaestroTabla;
+	}
+	
+	public JPanel graficarResultados(JTable tabla){
+		JPanel panelGrafica = new JPanel(new BorderLayout());
+		int filas = tabla.getRowCount();
+		int columnaDeLaNota = tabla.getColumnCount();
+		DefaultCategoryDataset data = new DefaultCategoryDataset();
+		
+		System.out.println("es: "+tabla.getValueAt(0, columnaDeLaNota-1));
+		for(int i = 0; i < filas; i++) {
+			String[] arr = String.valueOf(tabla.getValueAt(i, columnaDeLaNota-1)).split("/");
+			
+			int porcentaje = (int) ((double) Integer.valueOf(arr[0]) / (Integer.valueOf(arr[1])) * 100);
+			System.out.println("porcentaje "+ Integer.valueOf(arr[0])+" otra: "+Integer.valueOf(arr[1])+" porc: "+porcentaje);
+			data.addValue(porcentaje, "Estudiante", String.valueOf(tabla.getValueAt(i, 0)));
+		}
+		
+		JFreeChart grafica = ChartFactory.createBarChart3D("Grafico de notas", "Alumnos", "% de nota", data, PlotOrientation.VERTICAL, false, true , false);
+		ChartPanel contenedor = new ChartPanel(grafica);
+		
+		panelGrafica.add(contenedor,BorderLayout.CENTER);
+		
+		
+		return panelGrafica;
+	}
+	
+	private void llenaTablaDeAlumnos(JTable tabla, String ubicacion,Exam examen) {
+		JSONaExamen revision = new JSONaExamen();
+		ModeloNotasAlumno alumno = new ModeloNotasAlumno();
+		
+		DefaultTableModel modelo = new DefaultTableModel() {
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+		};
+		modelo.addColumn("Nombre");
+		for (int i = 0; i < examen.getTotalPreguntas(); i++) {
+			modelo.addColumn("P"+(i+1));
+			
+		}
+		modelo.addColumn("Puntaje");
 
+		Controlador.FileSystemModel ubicacionArchivos = new FileSystemModel(new File(ubicacion));
+		System.out.println(ubicacion);
+		File archivos = new File(ubicacion);
+		String[] totalArchivos = archivos.list();
+		if(totalArchivos != null) {
+			System.out.println(totalArchivos.length);
+			Object[] fila = new Object[examen.getTotalPreguntas()+2];
+			for (int i = 0; i < totalArchivos.length; i++) {
+				fila[0] = ubicacionArchivos.getNombreArchivos(archivos, i).substring(0,ubicacionArchivos.getNombreArchivos(archivos, i).lastIndexOf("."));
+					try {
+						alumno = revision.generaResultadoExam(new File(ubicacion+"\\"+ubicacionArchivos.getNombreArchivos(archivos, i)));
+						int[] arr = alumno.getPuntajeAlumno();
+						for (int j = 1; j <= examen.getTotalPreguntas()+1; j++) {
+							if(j == examen.getTotalPreguntas()+1) {
+								fila[j] = Integer.toString(alumno.getPuntajeTotalAlumno())+"/"+Integer.toString(alumno.getPuntajeTotalExam());
+								break;
+							}
+							fila[j] = Integer.toString(arr[j-1]);
+							
+						}						
+
+					} catch (FileNotFoundException e) {
+						e.printStackTrace();
+					}
+				modelo.addRow(fila);
+			}
+			tabla.setModel(modelo);
+			
+			tabla.getColumnModel().getColumn(0).setPreferredWidth(300);
+			for (int i = 1; i <= examen.getTotalPreguntas(); i++) {
+				tabla.getColumnModel().getColumn(i).setPreferredWidth(100);
+			}
+			tabla.getColumnModel().getColumn(examen.getTotalPreguntas()+1).setPreferredWidth(100);
+			
+		}
+	}
+	
+	public void muestraDatosAlumno() {
+		
+	}
+	
+	private void llenaTablaDeExamenes(JTable tabla, String ubicacion) {
+		DefaultTableModel modelo = new DefaultTableModel() {
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+		};
+		FechaDeCreacion fecha = new FechaDeCreacion();
+		modelo.addColumn("Nombre");
+		modelo.addColumn("Fecha");
+		Controlador.FileSystemModel ubicacionArchivos = new FileSystemModel(new File(ubicacion));
+		File archivos = new File(ubicacion);
+		String[] totalArchivos = archivos.list();
+		Object[] fila = new Object[2];
+		for (int i = 0; i < totalArchivos.length; i++) {
+			fila[0] = ubicacionArchivos.getNombreArchivos(archivos, i).substring(0,ubicacionArchivos.getNombreArchivos(archivos, i).lastIndexOf("."));
+			fila[1] = fecha.retornaFecha(ubicacion+"\\"+ubicacionArchivos.getNombreArchivos(archivos, i));
+			modelo.addRow(fila);
+		}
+		tabla.setModel(modelo);
+
+	}
+	
+	
 	JPanel AgregaExamen() {
 
 		JPanel panelContenedorAgregaExamen = new JPanel();
@@ -403,7 +657,7 @@ public class ProfesorGUI extends JFrame {
 	}
 
 	public String retornaClaveProfesor() {
-		String clave = new String();
+		String clave = "";//new String();
 
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -418,10 +672,8 @@ public class ProfesorGUI extends JFrame {
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
-
 				clave = rs.getString("CAST(AES_DECRYPT(Contraseña,'profesores')AS CHAR(50))");
 			}
-
 		} catch (Exception e2) {
 			System.err.println(e2.toString());
 		}
@@ -475,7 +727,7 @@ public class ProfesorGUI extends JFrame {
 		}
 
 	}
-
+	
 	class CrearExamen extends JPanel {
 
 		JPanel panelEnunciado;
@@ -508,15 +760,14 @@ public class ProfesorGUI extends JFrame {
 		int indexCorrectoSelecMul;
 		String[] alternativas;
 		boolean respuestaVerdFalso;
-
+		JPanel panelCreador;
 		String respuestaRespCorta;
 		/////////////////////////////////
 
 		public CrearExamen() {
 			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
 			panelMayorCrearExamen = new JPanel();
-			panelMayorCrearExamen.setBorder(new EmptyBorder(5, 5, 5, 5));
+			//panelMayorCrearExamen.setBorder(new EmptyBorder(5, 5, 5, 5));
 			panelMayorCrearExamen.setLayout(new BorderLayout(10, 10));
 			setContentPane(panelMayorCrearExamen);
 			panelMayorCrearExamen.add(panelIniciador());
@@ -535,7 +786,7 @@ public class ProfesorGUI extends JFrame {
 
 			JPanel panelTitulo = new JPanel(new BorderLayout(30, 30));
 			panelTitulo.setBorder(new EmptyBorder(20, 5, 20, 5));
-			JPanel panelCreador = new JPanel();
+			panelCreador = new JPanel();
 
 			JPanel panelSuperiorCreador = new JPanel(new BorderLayout());
 			JPanel panelTiempo = new JPanel(new BorderLayout(5, 0));
@@ -1117,6 +1368,8 @@ public class ProfesorGUI extends JFrame {
 					labelContadorTotalPreguntas.setText("Total preguntas: " + (totalPreguntas));
 					botonFinalizar.setEnabled(true);
 					grupoCorrecto.clearSelection();
+					letra = 65;
+					agregaOtraPregunta(panelCreador, panelCreadorSeleccionMultiple());
 				} else {
 					JOptionPane.showMessageDialog(null, new JLabel("Examen Vacio"), "ERROR CRITICO",
 							JOptionPane.ERROR_MESSAGE);
@@ -1242,12 +1495,11 @@ public class ProfesorGUI extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				Controlador.ConvierteExamenJson json = new ConvierteExamenJson();
 				
-				//json.guardarenArchivo(direccion, pregunta, nombreDelArchivo);  para guardar todo el examen con tiempo o no
-				//System.out.println(textTiempo.getText() +" " +totalPreguntas);
 				String direccion = "";
 				
 				try {
-					direccion = new File(".").getCanonicalPath() + "\\Profesor\\Examenes " + getProfesorName();
+					direccion = new File(".").getCanonicalPath() + "\\Profesor\\Examenes\\Examenes " + getProfesorName();
+					
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -1262,34 +1514,37 @@ public class ProfesorGUI extends JFrame {
 						}
 						
 						json.guardarenArchivo(direccion+"\\"+ProfesorGUI.nombreDelArchivo, textTiempo.getText(),totalPreguntas);
-						json.guardaTotalPreguntasSM(direccion+"\\"+ProfesorGUI.nombreDelArchivo, examenCreado.selecmulpreg);
-						json.guardaTotalPreguntasTF(direccion+"\\"+ProfesorGUI.nombreDelArchivo, examenCreado.tfpreg);
-						json.guardaTotalPreguntasRC(direccion+"\\"+ProfesorGUI.nombreDelArchivo, examenCreado.rcpreg);
 						
 						if (examenCreado.selecmulpreg != null && examenCreado.selecmulpreg.size() >= 1) {
 							for (int i = 0; i < examenCreado.selecmulpreg.size(); i++) {
-								json.guardarenArchivo(direccion, examenCreado.selecmulpreg.get(i),ProfesorGUI.nombreDelArchivo);
+								json.guardarenArreglo(direccion, examenCreado.selecmulpreg.get(i),ProfesorGUI.nombreDelArchivo);
 							}
 							
 						}
 						if (examenCreado.tfpreg != null && examenCreado.tfpreg.size() >= 1) {
 							for (int i = 0; i < examenCreado.tfpreg.size(); i++) {
-								json.guardarenArchivo(direccion, examenCreado.tfpreg.get(i),ProfesorGUI.nombreDelArchivo);
+								json.guardarenArreglo(direccion, examenCreado.tfpreg.get(i),ProfesorGUI.nombreDelArchivo);
 							}
 							
 						}
 						if (examenCreado.rcpreg != null && examenCreado.rcpreg.size() >= 1) {
 							for (int i = 0; i < examenCreado.rcpreg.size(); i++) {
-								json.guardarenArchivo(direccion, examenCreado.rcpreg.get(i), ProfesorGUI.nombreDelArchivo);
+								json.guardarenArreglo(direccion, examenCreado.rcpreg.get(i), ProfesorGUI.nombreDelArchivo);
 							}
 							
 						}
-						json.guardaArreglo(direccion+"\\"+ProfesorGUI.nombreDelArchivo);
-
+						json.guardaArregloEnArchivo(direccion+"\\"+ProfesorGUI.nombreDelArchivo);
+						try {
+							if(!new File(new File(".").getCanonicalPath() + "\\Profesor\\Notas\\Notas " + getProfesorName()+"\\Examen "+ProfesorGUI.nombreDelArchivo).exists()) {
+								new File(new File(".").getCanonicalPath() + "\\Profesor\\Notas\\Notas " + getProfesorName()+"\\Examen "+ProfesorGUI.nombreDelArchivo).mkdirs();
+							}
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
 						JOptionPane.showInternalMessageDialog(null, "Examen Creado");
 						panelMayorCrearExamen.removeAll();
 						panelMayorCrearExamen.add(MenuProfesor());
-						panelMayorCrearExamen.updateUI();
+						panelMayorCrearExamen.repaint();
 						pack();
 						setLocationRelativeTo(null);
 					} else {

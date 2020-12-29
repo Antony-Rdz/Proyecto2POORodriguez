@@ -26,7 +26,12 @@ public class TFpreguntas extends Pregunta {
 	 * Metodo que realiza el proceso de preguntar retorna "true" si la respuesta es
 	 * correcta y "false" si es incorrecta.
 	 */
+	@Override
 	public boolean buscar() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	/*public boolean buscar() {
 		boolean eleccion = false;
 		System.out.print(getEnunciado() + "(ingrese \"T\" o \"F\"): ");
 		char opcionUsuario = complementos.leerDeTeclado().toUpperCase().charAt(0);
@@ -55,7 +60,7 @@ public class TFpreguntas extends Pregunta {
 			Exam.preg_malas++;
 			return false;
 		}
-	}
+	}*/
 
 	/**
 	 * Funcion que verifica si la respuesta del usuario esta dentro del rango.
@@ -63,12 +68,12 @@ public class TFpreguntas extends Pregunta {
 	 * @param opcionUsuario Respuesta que el usuario ingresa.
 	 * @return boolean
 	 */
-	private boolean rango(char opcionUsuario) {
+	/*private boolean rango(char opcionUsuario) {
 		if (opcionUsuario == 'T' || opcionUsuario == 'F') {
 			return true;
 		}
 		return false;
-	}
+	}*/
 
 	/**
 	 * Devuelve la respuesta "true" o "false".
@@ -87,4 +92,5 @@ public class TFpreguntas extends Pregunta {
 	public void setRespuesta(boolean respuestaTF) {
 		this.respuestaTF = respuestaTF;
 	}
+
 }

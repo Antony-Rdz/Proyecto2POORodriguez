@@ -31,7 +31,12 @@ public class Selec_Mul_Pregunta extends Pregunta {
 	 * Metodo que realiza el proceso de preguntar retorna "true" si la respuesta es
 	 * correcta y "false" si es incorrecta.
 	 */
+	@Override
 	public boolean buscar() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	/*public boolean buscar() {
 		int aux_numero = 65; // Letra "A" en la tabla ascii
 		char opcionCorrecta = '\0'; // Variable donde se almacenara la letra generada.
 		char[] rango = new char[getTamanio_arreglo()];// arreglo que almacena el rango de las opciones.
@@ -77,7 +82,7 @@ public class Selec_Mul_Pregunta extends Pregunta {
 			Exam.preg_malas++;
 			return false;
 		}
-	}
+	}*/
 
 	/**
 	 * Verifica que la opcion ingresada por el usuario esté dentro del rango de las
@@ -87,14 +92,14 @@ public class Selec_Mul_Pregunta extends Pregunta {
 	 * @param OpcionUsuario Letra ingresada por usuario.
 	 * @return boolean
 	 */
-	private boolean verifica_rango(char[] rango, char OpcionUsuario) {
+	/*private boolean verifica_rango(char[] rango, char OpcionUsuario) {
 		for (int i = 0; i < rango.length; i++) {
 			if (OpcionUsuario == rango[i]) {
 				return true;
 			}
 		}
 		return false;
-	}
+	}*/
 
 	/**
 	 * Setea un arreglo de posibles respuestas.

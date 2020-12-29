@@ -1,20 +1,20 @@
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.SwingConstants;
@@ -41,56 +41,122 @@ public class InicioSesion extends JFrame {
 
 	public JPanel Iniciador() {
 
-		JPanel panelContenedor = new JPanel();
-		panelContenedor.setBorder(new EmptyBorder(20, 10, 20, 10));
-		panelContenedor.setLayout(new BoxLayout(panelContenedor, BoxLayout.Y_AXIS));
+		JPanel panelContenedor = new JPanel(new BorderLayout());
+		JPanel panelMenu = new JPanel(new BorderLayout());
+		panelContenedor.add(panelMenu,BorderLayout.NORTH);
+		JPanel panelCentral = new JPanel(new BorderLayout(0,20));
+		panelContenedor.add(panelCentral,BorderLayout.CENTER);
 		
-		JPanel panelLabel = new JPanel();
-		panelContenedor.add(panelLabel);
-
-		panelContenedor.add(Box.createRigidArea(new Dimension(0, 30)));
-
-		JPanel panelEleccion = new JPanel(new GridLayout(0, 3, 3, 0));
-		panelEleccion.setPreferredSize(new Dimension(350, 35));
-		panelContenedor.add(panelEleccion);
-
-		panelContenedor.add(Box.createRigidArea(new Dimension(0, 30)));
-
-		JPanel panelBotones = new JPanel(new GridLayout(0,2,100,0));
-		panelContenedor.add(panelBotones);
-
-		JLabel encabezado = new JLabel("Elije que eres");
-		encabezado.setFont(new Font("Tahoma", Font.PLAIN, 22));
-		encabezado.setHorizontalAlignment(SwingConstants.CENTER);
-		panelLabel.add(encabezado, BorderLayout.CENTER);
-
-		ButtonGroup grupoelecciones = new ButtonGroup();
-		JRadioButton eleccionAdmin = new JRadioButton("Admin");
-		eleccionAdmin.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent e) {
-				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-					dispose();
-					new AdminGUI();
-				}
+		panelCentral.setBorder(new EmptyBorder(20, 30, 30, 30));
+		
+		JMenuBar barraMenu = new JMenuBar();
+		panelMenu.add(barraMenu,BorderLayout.CENTER);
+		JMenu menuOpciones = new JMenu("Opciones");
+		barraMenu.add(menuOpciones);
+		JMenuItem opcionSalir = new JMenuItem("Salir");
+		opcionSalir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				System.exit(0);
 			}
 		});
+		menuOpciones.add(opcionSalir);
+
+		JPanel panelLabel = new JPanel(new BorderLayout(0,20));
+		panelCentral.add(panelLabel,BorderLayout.NORTH);
+
+		JPanel panelEleccion = new JPanel(new BorderLayout(30,0));
+		panelCentral.add(panelEleccion,BorderLayout.CENTER);
+
+		JPanel panelBotones = new JPanel(new BorderLayout());
+		panelCentral.add(panelBotones,BorderLayout.SOUTH);
+
+		JLabel encabezado = new JLabel("ExamSoft");//"ExamSoft");
+		encabezado.setFont(new Font("Tahoma", Font.PLAIN, 30));
+		encabezado.setHorizontalAlignment(SwingConstants.CENTER);
+		panelLabel.add(encabezado, BorderLayout.NORTH);
+		
+		ButtonGroup grupoelecciones = new ButtonGroup();
+		JRadioButton eleccionAdmin = new JRadioButton("Admin");
 		eleccionAdmin.setHorizontalAlignment(SwingConstants.CENTER);
-		eleccionAdmin.setFont(new Font("Tahoma", Font.PLAIN, 22));
+		eleccionAdmin.setFont(new Font("Tahoma", Font.PLAIN, 25));
 		JRadioButton eleccionProfe = new JRadioButton("Profesor");
 		eleccionProfe.setHorizontalAlignment(SwingConstants.CENTER);
-		eleccionProfe.setFont(new Font("Tahoma", Font.PLAIN, 22));
+		eleccionProfe.setFont(new Font("Tahoma", Font.PLAIN, 25));
 		JRadioButton eleccionAlumno = new JRadioButton("Alumno");
 		eleccionAlumno.setHorizontalAlignment(SwingConstants.CENTER);
-		eleccionAlumno.setFont(new Font("Tahoma", Font.PLAIN, 22));
+		eleccionAlumno.setFont(new Font("Tahoma", Font.PLAIN, 25));
 
 		grupoelecciones.add(eleccionAdmin);
 		grupoelecciones.add(eleccionProfe);
 		grupoelecciones.add(eleccionAlumno);
 
-		panelEleccion.add(eleccionAlumno);
-		panelEleccion.add(eleccionProfe);
-		panelEleccion.add(eleccionAdmin);
+		JLabel lblImagenSoftInicSes = new JLabel();
+		lblImagenSoftInicSes.setHorizontalAlignment(SwingConstants.CENTER);
+		JLabel lblImagenAlumnoInicSes = new JLabel();
+		lblImagenAlumnoInicSes.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				eleccionAlumno.setSelected(true);
+			}
+		});
+		lblImagenAlumnoInicSes.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		JLabel lblImagenProfeInicSes = new JLabel();
+		lblImagenProfeInicSes.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				eleccionProfe.setSelected(true);
+			}
+		});
+		lblImagenProfeInicSes.setHorizontalAlignment(SwingConstants.CENTER);
+		JLabel lblImagenAdminInicSes = new JLabel();
+		lblImagenAdminInicSes.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				eleccionAdmin.setSelected(true);
+			}
+		});
+		lblImagenAdminInicSes.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		String ubicacionImagenSoft = "";
+		String ubicacionImagenAlum = "";
+		String ubicacionImagenProf = "";
+		String ubicacionImagenAdmi = "";
+		
+		try {
+			ubicacionImagenSoft = new File(".").getCanonicalPath() + "\\res\\software.png";
+			ubicacionImagenAlum = new File(".").getCanonicalPath() + "\\res\\alumno.png";
+			ubicacionImagenProf = new File(".").getCanonicalPath() + "\\res\\profesor.png";
+			ubicacionImagenAdmi = new File(".").getCanonicalPath() + "\\res\\admin.png";
+		} catch (Exception e) {
+			System.out.println(e.toString());
+		}
+
+		lblImagenSoftInicSes.setIcon(new ImageIcon(new ImageIcon(ubicacionImagenSoft).getImage().getScaledInstance(220, 200, Image.SCALE_DEFAULT)));
+		lblImagenAlumnoInicSes.setIcon(new ImageIcon(new ImageIcon(ubicacionImagenAlum).getImage().getScaledInstance(110, 90, Image.SCALE_DEFAULT)));
+		lblImagenProfeInicSes.setIcon(new ImageIcon(new ImageIcon(ubicacionImagenProf).getImage().getScaledInstance(110, 100, Image.SCALE_DEFAULT)));
+		lblImagenAdminInicSes.setIcon(new ImageIcon(new ImageIcon(ubicacionImagenAdmi).getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)));
+		
+		panelLabel.add(lblImagenSoftInicSes, BorderLayout.CENTER);
+		JLabel labelEleccion = new JLabel("Por favor Identifiquese");
+		labelEleccion.setFont(new Font("Thaoma", Font.PLAIN, 25));
+		labelEleccion.setHorizontalAlignment(SwingConstants.CENTER);
+		panelLabel.add(labelEleccion,BorderLayout.SOUTH);
+
+		JPanel panelAlumno = new JPanel(new BorderLayout());
+		panelAlumno.add(lblImagenAlumnoInicSes,BorderLayout.CENTER);
+		panelAlumno.add(eleccionAlumno,BorderLayout.SOUTH);
+		panelEleccion.add(panelAlumno,BorderLayout.WEST);
+		
+		JPanel panelProfe = new JPanel(new BorderLayout());
+		panelProfe.add(lblImagenProfeInicSes,BorderLayout.CENTER);
+		panelProfe.add(eleccionProfe,BorderLayout.SOUTH);
+		panelEleccion.add(panelProfe,BorderLayout.CENTER);
+		
+		JPanel panelAdmin = new JPanel(new BorderLayout());
+		panelAdmin.add(lblImagenAdminInicSes,BorderLayout.CENTER);
+		panelAdmin.add(eleccionAdmin,BorderLayout.SOUTH);
+		panelEleccion.add(panelAdmin,BorderLayout.EAST);
 
 		JButton botonSiguiente = new JButton("Iniciar");
 		botonSiguiente.addActionListener(new ActionListener() {
@@ -111,16 +177,7 @@ public class InicioSesion extends JFrame {
 			}
 		});
 		botonSiguiente.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		panelBotones.add(botonSiguiente);
-		JButton botonSalir = new JButton("Salir");
-		botonSalir.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				System.exit(0);
-			}
-		});
-		botonSalir.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		panelBotones.add(botonSalir);
+		panelBotones.add(botonSiguiente,BorderLayout.CENTER);
 
 		return panelContenedor;
 	}
@@ -129,7 +186,6 @@ public class InicioSesion extends JFrame {
 	public InicioSesion() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		PanelMayorInicioSesion = new JPanel();
-		PanelMayorInicioSesion.setBorder(new EmptyBorder(5, 5, 5, 5));
 		PanelMayorInicioSesion.setLayout(new BorderLayout(0, 0));
 		setContentPane(PanelMayorInicioSesion);
 		PanelMayorInicioSesion.add(Iniciador());
@@ -139,14 +195,4 @@ public class InicioSesion extends JFrame {
 		setVisible(true);
 
 	}
-
-	/*public static JRadioButton getSelection(ButtonGroup group) {
-		for (Enumeration e = group.getElements(); e.hasMoreElements();) {
-			JRadioButton b = (JRadioButton) e.nextElement();
-			if (b.getModel() == group.getSelection()) {
-				return b;
-			}
-		}
-		return null;
-	}*/
 }

@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -16,12 +17,16 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
@@ -112,7 +117,6 @@ public class AdminGUI extends JFrame {
 		panelMayorRegistro = new JPanel();
 
 		// panelMayorRegistro.setBackground(Color.WHITE);
-		panelMayorRegistro.setBorder(new EmptyBorder(10, 10, 10, 10));
 		panelMayorRegistro.setLayout(new BoxLayout(panelMayorRegistro, BoxLayout.Y_AXIS));
 		setContentPane(panelMayorRegistro);
 		// panelMayorRegistro.add(agregaPorfesor());
@@ -276,8 +280,6 @@ public class AdminGUI extends JFrame {
 		confirmaClavePanel = new JPanel(new GridLayout(0, 2, 30, 0));
 		panelIngresoDatosAgregaProf.add(confirmaClavePanel);
 
-		panelIngresoDatosAgregaProf.add(Box.createRigidArea(new Dimension(0, 30)));
-
 		/******************************************************************/
 
 		lblNombreAgrega = new JLabel("Nombre");
@@ -286,6 +288,7 @@ public class AdminGUI extends JFrame {
 
 		textNombreAgrega = new JTextField(15);
 		textNombreAgrega.setBackground(Color.WHITE);
+		textNombreAgrega.addKeyListener(new letraMayuscula());
 		holder = new PlaceHolder(textNombreAgrega, "Ingrese un nombre");
 		nombrePanel.add(textNombreAgrega);
 
@@ -295,6 +298,7 @@ public class AdminGUI extends JFrame {
 
 		textApellidoAgrega = new JTextField(15);
 		textApellidoAgrega.setBackground(Color.WHITE);
+		textApellidoAgrega.addKeyListener(new letraMayuscula());
 		holder = new PlaceHolder(textApellidoAgrega, "Ingrese un apellido");
 		apellidoPanel.add(textApellidoAgrega);
 
@@ -304,6 +308,7 @@ public class AdminGUI extends JFrame {
 
 		textRutAgrega = new JTextField(15);
 		textRutAgrega.setBackground(Color.WHITE);
+		textRutAgrega.addKeyListener(new noAgregaLetrasRUTField());
 		holder = new PlaceHolder(textRutAgrega, "RUT sin punto y con guión");
 		rutPanel.add(textRutAgrega);
 
@@ -377,6 +382,7 @@ public class AdminGUI extends JFrame {
 		textNombreElimina.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		textNombreElimina.setForeground(Color.BLACK);
 		textNombreElimina.setBackground(Color.WHITE);
+		textNombreElimina.addKeyListener(new letraMayuscula());
 		nombrePanel.add(textNombreElimina);
 
 		lblApellidoElimina = new JLabel("Apellido");
@@ -387,6 +393,7 @@ public class AdminGUI extends JFrame {
 		textApellidoElimina.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		textApellidoElimina.setForeground(Color.BLACK);
 		textApellidoElimina.setBackground(Color.WHITE);
+		textApellidoElimina.addKeyListener(new letraMayuscula());
 		apellidoPanel.add(textApellidoElimina);
 
 		lblRutProfesorElimina = new JLabel("Rut");
@@ -394,6 +401,7 @@ public class AdminGUI extends JFrame {
 		rutPanel.add(lblRutProfesorElimina);
 
 		textRutElimina = new JTextField(15);
+		textRutElimina.addKeyListener(new noAgregaLetrasRUTField());
 		textRutElimina.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		textRutElimina.setForeground(Color.BLACK);
 		textRutElimina.setBackground(Color.WHITE);
@@ -415,15 +423,32 @@ public class AdminGUI extends JFrame {
 	public JPanel MenuAdmin() {
 
 		JPanel panelContenedorMenu = new JPanel(new BorderLayout());
-		panelContenedorMenu.setBorder(new EmptyBorder(20, 0, 20, 20));
+		panelContenedorMenu.setBorder(new EmptyBorder(0, 0, 20, 20));
 		
-		JPanel panelContenedorDerecho = new JPanel(new BorderLayout());
-		JPanel panelContenedorIzquierdo = new JPanel(new BorderLayout());
-		panelContenedorIzquierdo.setBorder(new EmptyBorder(0, 30, 0, 30));
-
-		panelContenedorMenu.add(panelContenedorIzquierdo, BorderLayout.WEST);
+		JPanel panelContenedorSuperior = new JPanel(new BorderLayout());
+		panelContenedorMenu.add(panelContenedorSuperior,BorderLayout.NORTH);
+		JPanel panelContenedorDerecho = new JPanel(new BorderLayout(0,10));
 		panelContenedorMenu.add(panelContenedorDerecho, BorderLayout.CENTER);
-
+		JPanel panelContenedorIzquierdo = new JPanel(new BorderLayout());
+		panelContenedorIzquierdo.setBorder(new EmptyBorder(10, 10, 0, 10));
+		panelContenedorMenu.add(panelContenedorIzquierdo, BorderLayout.WEST);
+		JPanel panelImagen = new JPanel(new BorderLayout());
+		panelImagen.setBorder(BorderFactory.createLineBorder(new Color(33, 48, 71), 2, true));
+		panelContenedorIzquierdo.add(panelImagen,BorderLayout.CENTER);
+		JPanel panelImagenInterno = new JPanel(new BorderLayout());
+		panelImagenInterno.setBorder(new EmptyBorder(0, 20, 0, 20));
+		panelImagen.add(panelImagenInterno,BorderLayout.CENTER);
+		
+		JMenuBar menuSuperior = new JMenuBar();
+		panelContenedorSuperior.add(menuSuperior,BorderLayout.NORTH);
+		JMenu menuOpciones = new JMenu("Opciones");
+		menuSuperior.add(menuOpciones);
+		JMenuItem opcionVolver = new JMenuItem("Volver");
+		menuOpciones.add(opcionVolver);
+		JMenuItem opcionSalir = new JMenuItem("Salir");
+		menuOpciones.add(opcionSalir);
+		
+		
 		JLabel labelImagenAdmin = new JLabel();
 		JLabel lblImagenProfesor = new JLabel();
 		String ubicacionImagen="";
@@ -435,7 +460,7 @@ public class AdminGUI extends JFrame {
 		}
 		ImageIcon imagenAdmin = new ImageIcon(ubicacionImagen);
 		labelImagenAdmin.setIcon(new ImageIcon(imagenAdmin.getImage().getScaledInstance(200, 200, Image.SCALE_DEFAULT)));
-		panelContenedorIzquierdo.add(labelImagenAdmin, BorderLayout.CENTER);
+		panelImagenInterno.add(labelImagenAdmin, BorderLayout.CENTER);
 
 		JTabbedPane PanelControlador = new JTabbedPane();
 		panelContenedorDerecho.add(PanelControlador, BorderLayout.NORTH);
@@ -443,38 +468,28 @@ public class AdminGUI extends JFrame {
 		JPanel panelTablaDeDatos = new JPanel(new BorderLayout());
 		panelContenedorDerecho.add(panelTablaDeDatos, BorderLayout.CENTER);
 
-		JPanel panelBotones = new JPanel(new BorderLayout());
-		panelContenedorDerecho.add(panelBotones, BorderLayout.SOUTH);
-
-		panelAgregarProfesor = new JPanel();
+		panelAgregarProfesor = new JPanel(new BorderLayout(0,10));
 		panelAgregarProfesor.setPreferredSize(new Dimension(0, 0));
-		panelAgregarProfesor.setLayout(new BoxLayout(panelAgregarProfesor, BoxLayout.Y_AXIS));
 		PanelControlador.addTab("Agregar Profesor", null, panelAgregarProfesor, null);
 
-		panelEliminarProfesor = new JPanel();
-		panelEliminarProfesor.setLayout(new BoxLayout(panelEliminarProfesor, BoxLayout.Y_AXIS));
+		panelEliminarProfesor = new JPanel(new BorderLayout(0,20));
 		PanelControlador.addTab("Eliminar Profesor", null, panelEliminarProfesor, null);
-
-		JButton botonSalir = new JButton("Salir");
-		panelBotones.add(botonSalir, BorderLayout.EAST);
 
 		JPanel panelDatosAgregaProf = agregaPorfesor();
 		panelDatosAgregaProf.setBorder(new EmptyBorder(30, 20, 0, 20));
-		panelAgregarProfesor.add(panelDatosAgregaProf);
+		panelAgregarProfesor.add(panelDatosAgregaProf,BorderLayout.CENTER);
 
 		JPanel IniciadorEliminaProfesorPanel = EliminaProfe();
-		IniciadorEliminaProfesorPanel.setBorder(new EmptyBorder(80, 20, 0, 20));
-		panelEliminarProfesor.add(IniciadorEliminaProfesorPanel);
+		IniciadorEliminaProfesorPanel.setBorder(new EmptyBorder(60, 20, 0, 20));
+		panelEliminarProfesor.add(IniciadorEliminaProfesorPanel,BorderLayout.CENTER);
 
-		JPanel btnGuardarPanel = new JPanel();
-		btnGuardarPanel.setLayout(new BoxLayout(btnGuardarPanel, BoxLayout.X_AXIS));
-		btnGuardarPanel.add(Box.createRigidArea(new Dimension(440, 0)));
-		panelAgregarProfesor.add(btnGuardarPanel);
-		panelAgregarProfesor.add(Box.createRigidArea(new Dimension(0, 30)));
+		JPanel btnGuardarPanel = new JPanel(new BorderLayout());
+		btnGuardarPanel.setBorder(new EmptyBorder(0, 20, 0, 20));
+		panelAgregarProfesor.add(btnGuardarPanel,BorderLayout.SOUTH);
 
 		JPanel btnBorrarPanel = new JPanel(new BorderLayout());
-		btnBorrarPanel.setBorder(new EmptyBorder(0, 0, 15, 20));
-		panelEliminarProfesor.add(btnBorrarPanel);
+		btnBorrarPanel.setBorder(new EmptyBorder(0, 0, 0, 20));
+		panelEliminarProfesor.add(btnBorrarPanel,BorderLayout.SOUTH);
 
 		tablaDatosProfesores = new JTable();
 		tablaDatosProfesores.addMouseListener(new MouseAdapter() {
@@ -741,5 +756,52 @@ public class AdminGUI extends JFrame {
 			return new String(password);
 		} 
 		return "";
+	}
+	
+	private class letraMayuscula implements KeyListener{
+
+		@Override
+		public void keyPressed(KeyEvent arg0) {
+		}
+
+		@Override
+		public void keyReleased(KeyEvent arg0) {	
+		}
+
+		@Override
+		public void keyTyped(KeyEvent arg0) {
+			JTextField txtnombre = (JTextField)arg0.getComponent();
+
+			String texto=txtnombre.getText().trim();
+			if(texto.length()>0){
+			char primero=texto.charAt(0);
+			texto=Character.toUpperCase(primero)+texto.substring(1, texto.length());
+			txtnombre.setText(texto);
+			}
+			
+		}
+		
+	}
+	
+	public class noAgregaLetrasRUTField implements KeyListener {
+
+		@Override
+		public void keyPressed(KeyEvent arg0) {
+		}
+
+		@Override
+		public void keyReleased(KeyEvent arg0) {
+		}
+
+		@Override
+		public void keyTyped(KeyEvent arg0) {
+			char letraIngresada = arg0.getKeyChar();
+			if (!((letraIngresada >= '0') && (letraIngresada <= '9')
+					|| ((letraIngresada == '-') || (letraIngresada == 'k') || (letraIngresada == 'K')))
+					|| (letraIngresada == KeyEvent.VK_BACK_SPACE) || (letraIngresada == KeyEvent.VK_DELETE)) {
+				arg0.consume();
+			}
+		}
+
 	}
 }

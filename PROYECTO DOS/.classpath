@@ -16,5 +16,7 @@
 	<classpathentry kind="lib" path="C:/Users/Anton/git/Proyecto2POORodriguez/PROYECTO DOS/Libs/junit-4.13.1.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Anton/git/Proyecto2POORodriguez/PROYECTO DOS/Libs/mail.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Anton/git/Proyecto2POORodriguez/PROYECTO DOS/Libs/javax.activation-1.2.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Anton/git/Proyecto2POORodriguez/PROYECTO DOS/Libs/jcommon-1.0.17.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Anton/git/Proyecto2POORodriguez/PROYECTO DOS/Libs/jfreechart-1.0.14.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

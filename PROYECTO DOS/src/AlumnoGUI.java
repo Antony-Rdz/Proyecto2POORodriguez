@@ -3,20 +3,28 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -28,18 +36,30 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
+import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 import com.formdev.flatlaf.intellijthemes.FlatCarbonIJTheme;
 
+import Controlador.ConvierteExamenJson;
+import Controlador.Exam;
 import Controlador.FileSystemModel;
+import Controlador.JSONaExamen;
+import Controlador.ModeloNotasAlumno;
+import Controlador.Resp_Cortas_Pregunta;
+import Controlador.Selec_Mul_Pregunta;
+import Controlador.TFpreguntas;
 
 public class AlumnoGUI extends JFrame {
 
@@ -54,8 +74,12 @@ public class AlumnoGUI extends JFrame {
 	JPasswordField textContra;
 	JPasswordField textConfirma;
 	String rut;
-	String ubicacionArchivos = "";	
-
+	String ubicacionArchivos = "";
+	String ubicacionDeLaNotaAlumno = "";
+	String nombreAlumno;
+	int fila;
+	String profe;
+	
 	public static void main(String[] args) {
 		try {
 			UIManager.setLookAndFeel(new FlatCarbonIJTheme());
@@ -76,12 +100,9 @@ public class AlumnoGUI extends JFrame {
 	public AlumnoGUI() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		panelMayorAlumno = new JPanel();
-		// panelMayorAlumno.setBorder(new EmptyBorder(5, 5, 5, 5));
 		panelMayorAlumno.setLayout(new BorderLayout(0, 0));
 		setContentPane(panelMayorAlumno);
-		// panelMayorAlumno.add(panelRegistro());
-		 //panelMayorAlumno.add(InicioSesionAlumno());
-		panelMayorAlumno.add(MenuAlumno());
+		panelMayorAlumno.add(InicioSesionAlumno());
 		pack();
 		setResizable(false);
 		setLocationRelativeTo(null);
@@ -136,7 +157,18 @@ public class AlumnoGUI extends JFrame {
 		JMenu menuOpciones = new JMenu("Opciones");
 		barraOpciones.add(menuOpciones);
 		JMenuItem VolverOpcion = new JMenuItem("Volver");
+		VolverOpcion.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				dispose();
+				new InicioSesion();
+			}
+		});
 		JMenuItem SalirOpcion = new JMenuItem("Salir");
+		SalirOpcion.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				System.exit(0);
+			}
+		});
 		menuOpciones.add(VolverOpcion);
 		menuOpciones.add(SalirOpcion);
 
@@ -186,13 +218,23 @@ public class AlumnoGUI extends JFrame {
 		JButton botonIngresar = new JButton("Ingresar");
 		botonIngresar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				String clave="";
+				for (char c : textContraInicSes.getPassword()) {
+					clave +=c;
+				}
+				
 				if (verificaCasillasVaciasInicSes()) {
 					if (validarut(textRutInicSes.getText())) {
-						panelMayorAlumno.removeAll();
-						panelMayorAlumno.add(MenuAlumno());
-						panelMayorAlumno.updateUI();
-						pack();
-						setLocationRelativeTo(null);
+						if(clave.equalsIgnoreCase(getClaveAlumno())) {
+							panelMayorAlumno.removeAll();
+							panelMayorAlumno.add(MenuAlumno());
+							panelMayorAlumno.updateUI();
+							pack();
+							setLocationRelativeTo(null);
+						}else {
+							JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrecto");
+						}
+					
 					} else {
 						JOptionPane.showMessageDialog(null, "Formato de rut invalido");
 					}
@@ -329,12 +371,14 @@ public class AlumnoGUI extends JFrame {
 		textNombre.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		textNombre.setBackground(Color.WHITE);
 		textNombre.setForeground(Color.BLACK);
+		textNombre.addKeyListener(new letraMayuscula());
 		panelName.add(textNombre, BorderLayout.CENTER);
 
 		textApellido = new JTextField();
 		textApellido.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		textApellido.setBackground(Color.WHITE);
 		textApellido.setForeground(Color.BLACK);
+		textApellido.addKeyListener(new letraMayuscula());
 		panelApellido.add(textApellido, BorderLayout.CENTER);
 
 		JLabel labelRut = new JLabel("Rut");
@@ -443,44 +487,75 @@ public class AlumnoGUI extends JFrame {
 		}
 	}
 
-	private JPanel MenuAlumno() {
+	public JPanel MenuAlumno() {
 
 		JPanel panelContenedorMenu = new JPanel(new BorderLayout());
 		JPanel panelContenedorIzquierdo = new JPanel(new BorderLayout());
-		panelContenedorIzquierdo.setBorder(new EmptyBorder(0, 0, 0, 0));
-		JPanel panelContenedorDerecho = new JPanel(new BorderLayout());
-
+		panelContenedorIzquierdo.setBorder(new EmptyBorder(20, 20, 10, 20));
 		panelContenedorMenu.add(panelContenedorIzquierdo, BorderLayout.WEST);
+		JPanel panelContenedorDerecho = new JPanel(new BorderLayout());
 		panelContenedorMenu.add(panelContenedorDerecho, BorderLayout.CENTER);
 
+		JPanel panelImagen = new JPanel(new BorderLayout());
+		panelImagen.setBorder(BorderFactory.createLineBorder(new Color(33, 48, 71), 2, true));
+		panelContenedorIzquierdo.add(panelImagen,BorderLayout.CENTER);
+		JPanel panelImagenInterno = new JPanel(/*new BorderLayout()*/);
+		panelImagenInterno.setLayout(new BoxLayout(panelImagenInterno, BoxLayout.Y_AXIS));
+		panelImagen.add(panelImagenInterno,BorderLayout.CENTER);
+		
 		JMenuBar barraOpciones = new JMenuBar();
 		panelContenedorMenu.add(barraOpciones, BorderLayout.NORTH);
 		JMenu menuOpciones = new JMenu("Opciones");
-		JMenu menuCreacion = new JMenu("Creación");
-		menuCreacion.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		menuOpciones.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		barraOpciones.add(menuOpciones);
-		barraOpciones.add(menuCreacion);
 		JMenuItem VolverOpcion = new JMenuItem("Volver");
+		VolverOpcion.addActionListener(new ActionListener() {		
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				dispose();
+				new AlumnoGUI();				
+			}
+		});
 		JMenuItem SalirOpcion = new JMenuItem("Salir");
+		SalirOpcion.addActionListener(new ActionListener() {		
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				System.exit(0);
+			}
+		});
 		VolverOpcion.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		SalirOpcion.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		menuOpciones.add(VolverOpcion);
 		menuOpciones.add(SalirOpcion);
 
-		JLabel lblImagenProfesor = new JLabel();
+		JLabel lblImagenAlumno = new JLabel();
 		String ubicacionImagen = "";
-	
+
 		try {
 			ubicacionImagen = new File(".").getCanonicalPath() + "\\res\\alumno.png";
 		} catch (Exception e) {
 			System.out.println(e.toString());
 		}
-
+		panelImagenInterno.add(Box.createRigidArea(new Dimension(0, 80)));
+		JPanel panelIcono = new JPanel(new BorderLayout());
+		panelImagenInterno.add(panelIcono);	
 		ImageIcon imagenAdmin = new ImageIcon(ubicacionImagen);
-		lblImagenProfesor
-				.setIcon(new ImageIcon(imagenAdmin.getImage().getScaledInstance(240, 200, Image.SCALE_DEFAULT)));
-		panelContenedorIzquierdo.add(lblImagenProfesor, BorderLayout.CENTER);
+		lblImagenAlumno.setIcon(new ImageIcon(imagenAdmin.getImage().getScaledInstance(220, 180, Image.SCALE_DEFAULT)));
+		lblImagenAlumno.setHorizontalAlignment(SwingConstants.CENTER);
+		panelIcono.add(lblImagenAlumno, BorderLayout.CENTER);
+		
+		JPanel panelInfo = new JPanel(new BorderLayout());
+		panelImagenInterno.add(panelInfo);
+		JLabel labelInfoUser = new JLabel("Usuario: "+getNombreAlumno());
+		labelInfoUser.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		labelInfoUser.setHorizontalAlignment(SwingConstants.CENTER);
+		panelInfo.add(labelInfoUser,BorderLayout.CENTER);
+		
+		JLabel labelInfoProfe = new JLabel("Docente: "+getProfesorAlumno());
+		labelInfoProfe.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		labelInfoProfe.setHorizontalAlignment(SwingConstants.CENTER);
+		panelInfo.add(labelInfoProfe,BorderLayout.SOUTH);
+		panelImagenInterno.add(Box.createRigidArea(new Dimension(0, 100)));
 
 		JTabbedPane panelControladorProfesor = new JTabbedPane();
 		panelContenedorDerecho.add(panelControladorProfesor, BorderLayout.CENTER);
@@ -496,9 +571,8 @@ public class AlumnoGUI extends JFrame {
 		JPanel panelArbolCarpetasCreaExamen = new JPanel(new BorderLayout(0, 10));
 		panelArbolCarpetasCreaExamen.setBorder(new EmptyBorder(10, 10, 10, 0));
 
-		
 		try {
-			ubicacionArchivos = new File(".").getCanonicalPath() + "\\Profesor\\Examenes " + getProfesorAlumno();
+			ubicacionArchivos = new File(".").getCanonicalPath() + "\\Profesor\\Examenes\\Examenes " + getProfesorAlumno();
 			if (!new File(ubicacionArchivos).exists()) {
 				new File(ubicacionArchivos).mkdirs();
 			}
@@ -506,31 +580,35 @@ public class AlumnoGUI extends JFrame {
 		} catch (Exception e) {
 			System.out.println(e.toString());
 		}
-		//-String ubicacionExamenes = ubicacionArchivos.substring(ubicacionArchivos.lastIndexOf('\\')+1);
-
 
 		JTable tablaDeExamamenesParaRealizar = new JTable();
 		tablaDeExamamenesParaRealizar.setModel(encabezadoExamen());
-		llenaTablaDeExamenes(tablaDeExamamenesParaRealizar,ubicacionArchivos);
+		llenaTablaDeExamenes(tablaDeExamamenesParaRealizar, ubicacionArchivos);
 		tablaDeExamamenesParaRealizar.addMouseListener(new MouseAdapter() {
-			  public void mouseClicked(MouseEvent e) {
-				    if (e.getClickCount() == 2) {
-				      int fila = tablaDeExamamenesParaRealizar.getSelectedRow();
-				      realizarExamen(fila, ubicacionArchivos);
-				    }
-				  }
-				});
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2) {
+					fila = tablaDeExamamenesParaRealizar.getSelectedRow();
+					TableModel tm = tablaDeExamamenesParaRealizar.getModel();
+					if(!String.valueOf(tm.getValueAt(fila, 1)).equalsIgnoreCase("Resuelto") ) {
+						realizarExamen(fila, ubicacionArchivos);
+					}else {
+						JOptionPane.showMessageDialog(null, "Ya resolvio el examen");
+					}
+
+				}
+			}
+		});
 		tablaDeExamamenesParaRealizar.getColumnModel().getColumn(0).setPreferredWidth(300);
 		tablaDeExamamenesParaRealizar.getColumnModel().getColumn(1).setPreferredWidth(100);
 		tablaDeExamamenesParaRealizar.getTableHeader().setReorderingAllowed(false);
 		tablaDeExamamenesParaRealizar.getTableHeader().setResizingAllowed(false);
-		
+
 		JScrollPane scrollArbol = new JScrollPane(tablaDeExamamenesParaRealizar);
 		panelCreacionExamen.add(scrollArbol, BorderLayout.CENTER);
 
 		JTable tablaDeExamenesNotas = new JTable();
 		tablaDeExamenesNotas.setModel(encabezadoNota());
-		llenaTablaDeNotas(tablaDeExamenesNotas,ubicacionArchivos);
+		llenaTablaDeNotas(tablaDeExamenesNotas, ubicacionArchivos);
 		tablaDeExamenesNotas.getColumnModel().getColumn(0).setPreferredWidth(300);
 		tablaDeExamenesNotas.getColumnModel().getColumn(1).setPreferredWidth(100);
 		tablaDeExamenesNotas.getTableHeader().setReorderingAllowed(false);
@@ -542,7 +620,30 @@ public class AlumnoGUI extends JFrame {
 
 	}
 
-	private String getProfesorAlumno() {
+	public String getClaveAlumno() {
+		String clave = "";
+
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+
+			Conexion objCon = new Conexion();
+			Connection conn = objCon.getConnection();
+			rut = textRutInicSes.getText();
+			ps = conn.prepareStatement("SELECT Contraseña, CAST(AES_DECRYPT(Contraseña,'alumno')AS CHAR(50)) FROM alumnos WHERE Rut = ?");
+			ps.setString(1, rut);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				clave = rs.getString("CAST(AES_DECRYPT(Contraseña,'alumno')AS CHAR(50))");
+			}
+		} catch (Exception e2) {
+			System.err.println(e2.toString());
+		}
+		return clave;
+	}
+	
+	public String getProfesorAlumno() {
 		String profe = "";
 
 		PreparedStatement ps = null;
@@ -551,19 +652,21 @@ public class AlumnoGUI extends JFrame {
 		try {
 			Conexion objCon = new Conexion();
 			Connection conn = objCon.getConnection();
-			//if (textRutInicSes != null) {
-				rut = "20779149-0";//textRutInicSes.getText();
+			if (textRutInicSes != null) {
+				rut = textRutInicSes.getText();
 				ps = conn.prepareStatement("SELECT Profesor FROM alumnos WHERE Rut = ?");
 				ps.setString(1, rut);
 				rs = ps.executeQuery();
-				
+
 				while (rs.next()) {
 					profe = rs.getString("Profesor");
+					
 				}
-			//}
+			}
 		} catch (Exception e2) {
 			System.err.println(e2.toString());
 		}
+		System.out.println(profe);
 		return profe;
 	}
 
@@ -578,8 +681,9 @@ public class AlumnoGUI extends JFrame {
 		DefaultTableModel tablaPorDefecto = new DefaultTableModel(rubrosTablaProf, 0);
 		return tablaPorDefecto;
 	}
-	
+
 	private void llenaTablaDeExamenes(JTable tabla, String ubicacion) {
+		JSONaExamen nota = new JSONaExamen();
 		DefaultTableModel modelo = new DefaultTableModel() {
 			public boolean isCellEditable(int row, int column) {
 				return false;
@@ -592,24 +696,38 @@ public class AlumnoGUI extends JFrame {
 		String[] totalArchivos = archivos.list();
 		Object[] fila = new Object[2];
 		for (int i = 0; i < totalArchivos.length; i++) {
-			fila[0] = ubicacionArchivos.getNombreArchivos(archivos,i);
-			if(finalzoElExamen()) {
-				fila[1] = "Resuelto";
+			
+			fila[0] = ubicacionArchivos.getNombreArchivos(archivos, i).substring(0,ubicacionArchivos.getNombreArchivos(archivos, i).lastIndexOf("."));	
+			try {
+				ubicacionDeLaNotaAlumno = new File(".").getCanonicalPath() + "\\Profesor\\Notas\\Notas " + getProfesorAlumno()+"\\Notas Examen "+ubicacionArchivos.getNombreArchivos(archivos, i).substring(0,ubicacionArchivos.getNombreArchivos(archivos, i).indexOf("."))+"\\"+getNombreAlumno()+".json";
+
+			} catch (Exception e) {
+				System.out.println(e.toString());
+			}
+			if(!new File(ubicacionDeLaNotaAlumno).exists()) {
+				fila[1] = "No realizado";
 			}else {
-				fila[1] = "Sin resolver";
+				try {
+					fila[1] = nota.getEstadoExamen(new File(ubicacionDeLaNotaAlumno));
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
 			}
 			modelo.addRow(fila);
 		}
 		tabla.setModel(modelo);
-		
 	}
-	
+
 	private void llenaTablaDeNotas(JTable tabla, String ubicacion) {
 		DefaultTableModel modelo = new DefaultTableModel() {
 			public boolean isCellEditable(int row, int column) {
 				return false;
 			}
 		};
+		String ubicacionDeLaNotaAlumnoParaTablaNota = "";
+		JSONaExamen resultados = new JSONaExamen();
+		ModeloNotasAlumno notaEnTabla;
+		
 		modelo.addColumn("Examenes");
 		modelo.addColumn("Nota");
 		Controlador.FileSystemModel ubicacionArchivos = new FileSystemModel(new File(ubicacion));
@@ -617,32 +735,45 @@ public class AlumnoGUI extends JFrame {
 		String[] totalArchivos = archivos.list();
 		Object[] fila = new Object[2];
 		for (int i = 0; i < totalArchivos.length; i++) {
-			fila[0] = ubicacionArchivos.getNombreArchivos(archivos,i);
-			if(finalzoElExamen()) {
-				fila[1] = "getNota()";
+			fila[0] = ubicacionArchivos.getNombreArchivos(archivos, i).substring(0,ubicacionArchivos.getNombreArchivos(archivos, i).lastIndexOf("."));		
+			try {
+				ubicacionDeLaNotaAlumnoParaTablaNota = new File(".").getCanonicalPath() + "\\Profesor\\Notas\\Notas " + getProfesorAlumno()+"\\Notas Examen "+ubicacionArchivos.getNombreArchivos(archivos, i).substring(0,ubicacionArchivos.getNombreArchivos(archivos, i).indexOf("."))+"\\"+getNombreAlumno()+".json";
+
+			} catch (Exception e) {
+				System.out.println(e.toString());
+			}
+			if(!new File(ubicacionDeLaNotaAlumnoParaTablaNota).exists()) {
+				fila[1] = "Sin califiacar";
 			}else {
-				fila[1] = " ";
+				try {
+					notaEnTabla = resultados.generaResultadoExam(new File(ubicacionDeLaNotaAlumnoParaTablaNota));
+					
+					fila[1] = String.valueOf(notaEnTabla.getPuntajeTotalAlumno())+"/"+String.valueOf(notaEnTabla.getPuntajeTotalExam());
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
 			}
 			modelo.addRow(fila);
 		}
 		tabla.setModel(modelo);
-		
+
 	}
-	
+
 	private void realizarExamen(int fila, String ubicacion) {
-		String examen;
+		JSONaExamen conversor = new JSONaExamen();
 		File archivos = new File(ubicacion);
 		String[] archivoElegido = archivos.list();
 		Controlador.archivos lector = new Controlador.archivos();
-		examen = lector.leerArchivo(new File(ubicacion+"\\"+archivoElegido[fila]));
-		System.out.println(examen);
-		
-		
-	}
-	
-	
-	private boolean finalzoElExamen() {
-		return false;
+		try {
+			panelMayorAlumno.removeAll();
+			panelMayorAlumno.add(new ExamenGUI(conversor.generaExamen(new File(ubicacion + "\\" + archivoElegido[fila])),getProfesorAlumno(),getNameExamen(),getNombreAlumno()));
+			panelMayorAlumno.updateUI();
+			pack();
+			setLocationRelativeTo(null);
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, e.getMessage());
+		}
+
 	}
 
 	private boolean verificaCasillasVaciasRegistro() {
@@ -785,5 +916,590 @@ public class AlumnoGUI extends JFrame {
 		}
 
 	}
+	
+	private class letraMayuscula implements KeyListener{
 
+		@Override
+		public void keyPressed(KeyEvent arg0) {
+		}
+
+		@Override
+		public void keyReleased(KeyEvent arg0) {	
+		}
+
+		@Override
+		public void keyTyped(KeyEvent arg0) {
+			JTextField txtnombre = (JTextField)arg0.getComponent();
+
+			String texto=txtnombre.getText().trim();
+			if(texto.length()>0){
+			char primero=texto.charAt(0);
+			texto=Character.toUpperCase(primero)+texto.substring(1, texto.length());
+			txtnombre.setText(texto);
+			}
+			
+		}
+		
+	}
+	
+	public String getNombreAlumno() {
+		String name = new String();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			Conexion objCon = new Conexion();
+			Connection conn = objCon.getConnection();
+			if(textRutInicSes != null) {
+				rut = textRutInicSes.getText();
+			}			
+			ps = conn.prepareStatement("SELECT Nombre,Apellido FROM alumnos WHERE Rut = ?");
+			ps.setString(1, rut);
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+				name = rs.getString("Nombre") + " " + rs.getString("Apellido");
+			}
+		} catch (Exception e2) {
+			System.err.println(e2.toString());
+		}
+		return name;
+	}
+	
+	public String getNameExamen() {
+		String name = "";
+		String ubicacion = "";
+		try {
+			ubicacion = new File(".").getCanonicalPath() + "\\Profesor\\Examenes\\Examenes " + getProfesorAlumno();
+			
+
+		} catch (Exception e) {
+			System.out.println(e.toString());
+		}
+		File archivos = new File(ubicacion);
+		String[] archivoElegido = archivos.list();
+		
+		System.out.println(archivoElegido[fila].substring(0,archivoElegido[fila].lastIndexOf(".")));
+		
+		return archivoElegido[fila].substring(0,archivoElegido[fila].lastIndexOf("."));	
+	}
+	
+	@SuppressWarnings("serial")
+	class ExamenGUI extends JPanel {
+
+		JPanel panelMaster;
+		JPanel panelEnunciado;
+		JTextArea textEnunciado;
+		JScrollPane scroll;
+		JPanel panelRespuestaSelecMultiple;
+		JPanel panelContenedorRespuestasAbsoluto;
+		JPanel panelBotones;
+		JButton btnSiguiente;
+		JLabel labelTipoDePregunta;
+		JLabel labelCantidadPreguntas;
+		JLabel labelTiempo;
+		ButtonGroup grupoDeBotones;
+		Controlador.Exam examen;
+		private String[] respuestaSeleccionadaUser;
+		private ArrayList<JRadioButton> botonesSelecMult;
+		private ArrayList<JRadioButton> botonesTF;
+		private ArrayList<JTextPane> TextRespCortaPane;
+		
+		int iterador = 0;
+		private JButton btnAnterior;
+		private JPanel panelRespuestaTrueFalse;
+		private JPanel panelRespuestaCorta;
+		Timer tiempo;
+		boolean flag = true;
+		private JRadioButton[] ArregloRbutton;
+		private String[] respuestasCorrectasEXM;
+		private int[] puntajesUser;
+		private int[] puntajeExam;
+		
+		private int m = 10, s = 0;
+		private JLabel labelM;
+		private JLabel labelS;
+
+		public ExamenGUI() {
+		}
+		
+		public ExamenGUI(Exam examen,String nombreProfesor,String nombreExamen,String nombreAlumno) {
+
+			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			panelMaster = new JPanel(new BorderLayout());
+
+			panelMaster.setBorder(new EmptyBorder(0, 0, 0, 0));
+			panelMaster.setLayout(new BoxLayout(panelMaster, BoxLayout.Y_AXIS));
+			setContentPane(panelMaster);
+			panelMaster.add(BarraMenu(), BorderLayout.NORTH);
+			panelMaster.add(iniciador(examen,nombreProfesor,nombreExamen,nombreAlumno), BorderLayout.CENTER);
+			setResizable(false);
+			pack();
+			setLocationRelativeTo(null);
+			setVisible(true);
+		}
+
+		public JPanel BarraMenu() {
+
+			JPanel panelContenedorMenu = new JPanel();
+			panelContenedorMenu.setLayout(new BoxLayout(panelContenedorMenu, BoxLayout.Y_AXIS));
+			/************************* PANEL DE OPCIONES *******************************/
+			JPanel panelMenu = new JPanel(new BorderLayout());
+			JMenuBar BarraOpciones = new JMenuBar();
+			JMenu Opciones = new JMenu("Opciones");
+			Opciones.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+			JMenuItem OpcionCerrarSesion = new JMenuItem("Salir");
+			OpcionCerrarSesion.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+			OpcionCerrarSesion.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					panelMaster.removeAll();
+					panelMaster.add(MenuAlumno());
+					panelMaster.updateUI();
+					pack();
+					setLocationRelativeTo(null);
+				}
+			});
+			Opciones.add(OpcionCerrarSesion);
+			BarraOpciones.add(Opciones);
+			panelMenu.add(BarraOpciones, BorderLayout.SOUTH);
+			panelContenedorMenu.add(panelMenu);
+			/***************************************************************************/
+			return panelContenedorMenu;
+		}
+
+		public JPanel iniciador(Exam examen,String nombreProfesor,String nombreExamen,String nombreAlumno) {
+			System.out.println("nP: "+nombreProfesor+ " nE: "+nombreExamen+ "  nA: "+nombreAlumno);
+			
+			puntajesUser = new int[examen.selecmulpreg.size() + examen.tfpreg.size() + examen.rcpreg.size()];
+			puntajeExam = new int[puntajesUser.length];
+			respuestasCorrectasEXM = new String[examen.selecmulpreg.size() + examen.tfpreg.size() + examen.rcpreg.size()];
+			m = examen.getTiempo();
+			if(m > 0) {
+				tiempo = new Timer(1000, acciones);
+				tiempo.start();
+			}
+			respuestaSeleccionadaUser = new String[examen.selecmulpreg.size() + examen.tfpreg.size() + examen.rcpreg.size()];
+
+			JPanel panelIniciador = new JPanel(new BorderLayout(0,20));
+			panelIniciador.setBorder(new EmptyBorder(20, 20, 20, 20));
+
+			JPanel panelAgregados = new JPanel();
+			panelAgregados.setLayout(new BorderLayout(20, 0));
+			panelIniciador.add(panelAgregados, BorderLayout.NORTH);
+
+			JPanel panelContenedorPregunta = new JPanel(new BorderLayout());
+			panelContenedorPregunta.setBorder(BorderFactory.createLineBorder(new Color(33, 48, 71), 2, true));
+			panelIniciador.add(panelContenedorPregunta, BorderLayout.CENTER);
+
+			JPanel panelContenedorBotones = new JPanel();
+			panelContenedorBotones.setLayout(new BoxLayout(panelContenedorBotones, BoxLayout.Y_AXIS));
+			panelIniciador.add(panelContenedorBotones, BorderLayout.SOUTH);
+
+			/************************ PANEL DE AGREGADOS ****************************/
+			JPanel panelInfoPreg = new JPanel();
+			panelInfoPreg.setLayout(new BoxLayout(panelInfoPreg, BoxLayout.Y_AXIS));
+			panelAgregados.add(panelInfoPreg, BorderLayout.WEST);
+
+			JPanel panelTiempo = new JPanel(new GridLayout(0, 2, 0, 0));
+			panelAgregados.add(panelTiempo, BorderLayout.CENTER);
+
+			
+			JPanel panelBotonFinalizar = new JPanel();
+			panelBotonFinalizar.setLayout(new BorderLayout(0, 0));
+			panelAgregados.add(panelBotonFinalizar, BorderLayout.EAST);
+
+			JButton botonFinalizar = new JButton("Finalizar Examen");
+			botonFinalizar.addActionListener(new ActionListener() {
+				ConvierteExamenJson json = new ConvierteExamenJson();
+				public void actionPerformed(ActionEvent arg0) {
+					String direccion = "";
+					try {
+						direccion = new File(".").getCanonicalPath() + "\\Profesor\\Notas\\Notas "+ nombreProfesor+"\\Notas Examen "+nombreExamen;
+						if (!new File(direccion).exists()) {
+							new File(direccion).mkdirs();
+						}
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					
+					System.out.println(direccion);
+					
+					System.out.println("user: ");
+					for (String algo : respuestaSeleccionadaUser) {
+						System.out.println(algo);
+					}
+					System.out.println("\nEXAM: ");
+					for (String algo : respuestasCorrectasEXM) {
+						System.out.println(algo);
+					}
+					System.out.println("\nPuntajes: ");
+					for (int algo : puntajesUser) {
+						System.out.println(algo);
+					}
+					
+					ArrayList<Integer> respuestasVacias = new ArrayList<>();
+					String mensaje = "";
+					for (int i = 0; i < respuestaSeleccionadaUser.length; i++) {
+						if (respuestaSeleccionadaUser[i] == null || respuestaSeleccionadaUser[i] == "") {
+							respuestasVacias.add(i + 1);
+						}
+					}
+					for (Integer integer : respuestasVacias) {
+						if (mensaje.isBlank()) {
+							mensaje += Integer.toString(integer);
+						} else {
+							mensaje = mensaje + "," + Integer.toString(integer);
+						}
+					}
+					if(respuestasVacias.size()>=1) {
+						int respuesta = JOptionPane.showConfirmDialog(null,
+								"<html>Seguro que quiere finalizar<br>le falta contestar las preguntas : " + mensaje
+										+ "</br> </html>",
+								"Finalizar", JOptionPane.YES_NO_OPTION);
+						if (respuesta == JOptionPane.YES_OPTION) {
+							json.guardaNotasAlumno(puntajesUser,puntajeExam,respuestaSeleccionadaUser,respuestasCorrectasEXM,direccion+"\\"+nombreAlumno);				
+							if(m > 0) {
+								tiempo.stop();
+							}
+							panelMaster.removeAll();
+							panelMaster.add(MenuAlumno());
+							panelMaster.updateUI();
+							pack();
+							setLocationRelativeTo(null);
+						}
+					}else {
+						json.guardaNotasAlumno(puntajesUser,puntajeExam,respuestaSeleccionadaUser,respuestasCorrectasEXM,direccion+"\\"+nombreAlumno);
+						if(m > 0) {
+							tiempo.stop();
+						}
+						panelMaster.removeAll();
+						panelMaster.add(MenuAlumno());
+						panelMaster.updateUI();
+						pack();
+						setLocationRelativeTo(null);
+					}
+				}
+			});
+			botonFinalizar.setFont(new Font("Tahoma", Font.PLAIN, 17));
+			panelBotonFinalizar.add(botonFinalizar);
+
+			labelM = new JLabel();
+			labelM.setHorizontalAlignment(SwingConstants.RIGHT);
+			labelM.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			panelTiempo.add(labelM);
+
+			labelS = new JLabel();
+			labelS.setHorizontalAlignment(SwingConstants.LEFT);
+			labelS.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			panelTiempo.add(labelS);
+			if(m > 0) {
+				labelM.setText("Tiempo " + m + ":");
+				labelS.setText("0" + s + " minutos");
+			}else {
+				labelM.setText("Tiempo --:");
+				labelS.setText("-- minutos");
+			}
+			
+			
+			labelCantidadPreguntas = new JLabel();
+			labelCantidadPreguntas.setFont(new Font("Tahoma", Font.PLAIN, 15));
+
+			labelCantidadPreguntas.setText("Pregunta " + (iterador + 1) + " de "
+					+ (examen.selecmulpreg.size() + examen.tfpreg.size() + examen.rcpreg.size()));
+			labelCantidadPreguntas.setHorizontalAlignment(SwingConstants.CENTER);
+			panelInfoPreg.add(labelCantidadPreguntas);
+
+			labelTipoDePregunta = new JLabel();
+			labelTipoDePregunta.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			labelTipoDePregunta.setText("SELECCIÓN MULTIPLE");
+			labelTipoDePregunta.setHorizontalAlignment(SwingConstants.CENTER);
+			panelInfoPreg.add(labelTipoDePregunta);
+			/***************************************************************************/
+
+			/************************* PANEL DEL ENUNCIADO ******************************/
+			panelEnunciado = new JPanel(new BorderLayout());
+			panelEnunciado.setBorder(new EmptyBorder(10, 10, 10, 10));
+			panelContenedorPregunta.add(panelEnunciado, BorderLayout.NORTH);
+
+			textEnunciado = new JTextArea();
+			textEnunciado.setLineWrap(true);
+			textEnunciado.setWrapStyleWord(true);
+			textEnunciado.setFont(new Font("Tahoma", Font.PLAIN, 24));
+			textEnunciado.setForeground(Color.WHITE);
+			textEnunciado.setEditable(false);
+			textEnunciado.setPreferredSize(new Dimension(900, 220));
+			textEnunciado.setText(examen.selecmulpreg.get(0).getEnunciado());
+
+			scroll = new JScrollPane();
+			scroll.setViewportView(textEnunciado);
+
+			panelEnunciado.add(scroll, BorderLayout.CENTER);
+
+			/***************************************************************************/
+
+			/************************* PANEL DE LA RESPUESTA ******************************/
+			panelContenedorRespuestasAbsoluto = new JPanel(new BorderLayout());
+			panelContenedorRespuestasAbsoluto.setBorder(new EmptyBorder(20, 70, 30, 70));
+			panelContenedorRespuestasAbsoluto.setPreferredSize(new Dimension(900, 250));
+
+			panelRespuestaSelecMultiple = new JPanel(new GridLayout(5, 4, 20, 20/* 5, 4, 50, 30 */));
+			agregaBotonesDinamicoSelecMult(examen.selecmulpreg.get(iterador));
+			panelContenedorRespuestasAbsoluto.add(panelRespuestaSelecMultiple, BorderLayout.CENTER);
+
+			panelRespuestaTrueFalse = new JPanel(new GridLayout(0, 2, 10, 0));
+			panelRespuestaTrueFalse.setPreferredSize(panelRespuestaSelecMultiple.getPreferredSize());
+
+			panelRespuestaCorta = new JPanel(new BorderLayout());
+			panelRespuestaCorta.setBorder(new EmptyBorder(60, 20, 60, 20));
+
+			panelContenedorPregunta.add(panelContenedorRespuestasAbsoluto, BorderLayout.CENTER);
+			/***************************************************************************/
+
+			/************************* PANEL DE LOS BOTONES ****************************/
+			panelBotones = new JPanel(new BorderLayout());
+			panelContenedorBotones.add(panelBotones, BorderLayout.SOUTH);
+
+			btnSiguiente = new JButton("Siguiente");
+			btnSiguiente.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			btnSiguiente.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					try {
+						if (iterador < (examen.selecmulpreg.size() + examen.tfpreg.size() + examen.rcpreg.size()) - 1) {
+							iterador++;
+							labelCantidadPreguntas.setText("Pregunta " + (iterador + 1) + " de "
+									+ (examen.selecmulpreg.size() + examen.tfpreg.size() + examen.rcpreg.size()));
+							AvanzaRetrocedePregunta(examen);
+						}
+					} catch (Exception e) {
+						System.err.println(e);
+					}
+				}
+			});
+
+			btnAnterior = new JButton("Anterior");
+			btnAnterior.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			btnAnterior.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					try {
+						if (iterador > 0) {
+							iterador--;
+							labelCantidadPreguntas.setText("Pregunta " + (iterador + 1) + " de "
+									+ (examen.selecmulpreg.size() + examen.tfpreg.size() + examen.rcpreg.size()));
+							panelRespuestaSelecMultiple.removeAll();
+							AvanzaRetrocedePregunta(examen);
+						}
+					} catch (Exception e) {
+						System.err.println(e);
+					}
+				}
+			});
+			panelBotones.add(btnAnterior, BorderLayout.WEST);
+			panelBotones.add(btnSiguiente, BorderLayout.EAST);
+			/***************************************************************************/
+
+			return panelIniciador;
+		}
+
+		void AvanzaRetrocedePregunta(Exam examen) {
+			if (iterador < examen.selecmulpreg.size()) {
+				pack();
+				SelMulActualizaPanel(examen);
+			} else if (iterador >= (examen.selecmulpreg.size())
+					&& iterador < (examen.selecmulpreg.size() + examen.tfpreg.size())) {
+				pack();
+				TrueFalseActualizaPanel(examen);
+			} else if (iterador >= (examen.selecmulpreg.size() + examen.tfpreg.size())
+					&& iterador < (examen.selecmulpreg.size() + examen.tfpreg.size() + examen.rcpreg.size())) {
+				pack();
+				RespCortActualizaPanel(examen);
+			}
+		}
+
+		public void SelMulActualizaPanel(Exam examen) {
+			panelContenedorRespuestasAbsoluto.removeAll();
+			panelContenedorRespuestasAbsoluto.add(panelRespuestaSelecMultiple, BorderLayout.CENTER);
+			panelContenedorRespuestasAbsoluto.updateUI();
+
+			panelRespuestaSelecMultiple.removeAll();
+			labelTipoDePregunta.setText("SELECCIÓN MULTIPLE");
+			textEnunciado.setText(examen.selecmulpreg.get(iterador).getEnunciado());
+			agregaBotonesDinamicoSelecMult(examen.selecmulpreg.get(iterador));
+			RbutonSeleccionado(botonesSelecMult);
+		}
+
+		public void TrueFalseActualizaPanel(Exam examen) {
+			panelContenedorRespuestasAbsoluto.removeAll();
+			panelContenedorRespuestasAbsoluto.add(panelRespuestaTrueFalse, BorderLayout.CENTER);
+			panelContenedorRespuestasAbsoluto.updateUI();
+			panelRespuestaTrueFalse.removeAll();
+
+			labelTipoDePregunta.setText("VERDADERO O FALSO");
+			textEnunciado.setText(examen.tfpreg.get(iterador - examen.selecmulpreg.size()).getEnunciado());
+			agregaBotonesDinamicoTrueFalse(examen.tfpreg.get(iterador - examen.selecmulpreg.size()));
+			RbutonSeleccionado(botonesTF);
+		}
+
+		public void RespCortActualizaPanel(Exam examen) {
+			panelContenedorRespuestasAbsoluto.removeAll();
+			panelContenedorRespuestasAbsoluto.add(panelRespuestaCorta, BorderLayout.CENTER);
+			panelContenedorRespuestasAbsoluto.updateUI();
+			panelRespuestaCorta.removeAll();
+			labelTipoDePregunta.setText("RESPUESTA CORTA");
+			textEnunciado.setText(examen.rcpreg.get(iterador - examen.selecmulpreg.size() - examen.tfpreg.size()).getEnunciado());
+			agregaTextPaneDinamico(examen.rcpreg.get(iterador - examen.selecmulpreg.size() - examen.tfpreg.size()));
+		}
+
+		public void RbutonSeleccionado(ArrayList<JRadioButton> botones) {
+			for (int i = 0; i < botones.size(); i++) {
+				if (botones.get(i).getText().equalsIgnoreCase(respuestaSeleccionadaUser[iterador])) {
+					botones.get(i).setSelected(true);
+					break;
+				}
+			}
+		}
+
+		void agregaBotonesDinamicoSelecMult(Selec_Mul_Pregunta pregunta) {
+
+			ArregloRbutton = new JRadioButton[pregunta.getopciones().length];
+			botonesSelecMult = new ArrayList<JRadioButton>();
+			grupoDeBotones = new ButtonGroup();
+
+			for (int i = 0; i < ArregloRbutton.length; i++) {
+				ArregloRbutton[i] = new JRadioButton(pregunta.getopciones()[i]);
+				ArregloRbutton[i].setFont(new Font("Tahoma", Font.PLAIN, 20));
+				botonesSelecMult.add(ArregloRbutton[i]);
+				grupoDeBotones.add(ArregloRbutton[i]);
+				panelRespuestaSelecMultiple.add(ArregloRbutton[i]);
+				int aux = i;
+				ArregloRbutton[i].addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+						respuestaSeleccionadaUser[iterador] = ArregloRbutton[aux].getText();
+						respuestasCorrectasEXM[iterador] = pregunta.getRespuestaCorecta();
+						puntajeExam[iterador] = pregunta.getPeso();
+						if(ArregloRbutton[aux].getText().equalsIgnoreCase(pregunta.getRespuestaCorecta())) {
+							System.out.println("smA "+pregunta.getPeso());
+							puntajesUser[iterador] = pregunta.getPeso();	
+							System.out.println("smD "+puntajesUser[iterador]);
+						}else {
+							System.out.println("smA 0");
+							puntajesUser[iterador] = 0;
+							System.out.println("smD "+puntajesUser[iterador]);
+						}
+					}
+				});
+
+			}
+			panelRespuestaSelecMultiple.updateUI();
+			pack();
+
+		}
+
+		void agregaBotonesDinamicoTrueFalse(TFpreguntas pregunta) {
+
+			ArregloRbutton = new JRadioButton[2];
+			botonesTF = new ArrayList<JRadioButton>();
+			grupoDeBotones = new ButtonGroup();
+			String[] opcion = { "Verdadero", "Falso" };
+
+			for (int i = 0; i < ArregloRbutton.length; i++) {
+				ArregloRbutton[i] = new JRadioButton(opcion[i]);
+				ArregloRbutton[i].setHorizontalAlignment(SwingConstants.CENTER);
+				ArregloRbutton[i].setFont(new Font("Tahoma", Font.PLAIN, 20));
+				botonesTF.add(ArregloRbutton[i]);
+				grupoDeBotones.add(ArregloRbutton[i]);
+				panelRespuestaTrueFalse.add(ArregloRbutton[i]);
+				int aux = i;
+				ArregloRbutton[i].addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+						respuestaSeleccionadaUser[iterador] = ArregloRbutton[aux].getText(); 
+						String rta = (pregunta.getRespuestaTF()==true)? "Verdadero":"Falso";
+						respuestasCorrectasEXM[iterador] = rta;
+						puntajeExam[iterador] = pregunta.getPeso(); 
+						if(ArregloRbutton[aux].getText().equalsIgnoreCase(rta)) {
+							System.out.println("tfA "+pregunta.getPeso());
+							puntajesUser[iterador] = pregunta.getPeso();	
+							System.out.println("tfD "+puntajesUser[iterador]);
+						}else {
+							System.out.println("tfA 0");
+							puntajesUser[iterador] = 0;	
+							System.out.println("tfD "+puntajesUser[iterador]);
+						}
+					}
+				});
+			}
+			panelRespuestaTrueFalse.updateUI();
+			pack();
+		}
+
+		public void agregaTextPaneDinamico(Resp_Cortas_Pregunta pregunta) {
+			JTextField txtRespuestaCortaPgr = new JTextField();
+			txtRespuestaCortaPgr.setText((respuestaSeleccionadaUser[iterador] == null) ? "" : (respuestaSeleccionadaUser[iterador]));
+			txtRespuestaCortaPgr.setBackground(Color.WHITE);
+			txtRespuestaCortaPgr.setForeground(Color.BLACK);
+			txtRespuestaCortaPgr.setFont(new Font("Thaoma", Font.PLAIN, 23));
+			panelRespuestaCorta.add(txtRespuestaCortaPgr, BorderLayout.CENTER);
+			txtRespuestaCortaPgr.addFocusListener(new FocusListener() {
+				public void focusLost(FocusEvent arg0) {
+					respuestaSeleccionadaUser[iterador] = txtRespuestaCortaPgr.getText();
+					respuestasCorrectasEXM[iterador] = pregunta.getRespuestaCorta();
+					puntajeExam[iterador] = pregunta.getPeso(); 
+					if(txtRespuestaCortaPgr.getText().equalsIgnoreCase(pregunta.getRespuestaCorta())) {
+						System.out.println("rcA "+pregunta.getPeso());
+						puntajesUser[iterador] = pregunta.getPeso();	
+						System.out.println("rcD "+puntajesUser[iterador]);
+					}else {
+						System.out.println("rcA 0");
+						puntajesUser[iterador] =  0;	
+						System.out.println("rcD "+puntajesUser[iterador]);
+					}
+				}
+
+				public void focusGained(FocusEvent arg0) {
+				}
+			});
+
+			panelRespuestaCorta.updateUI();
+			pack();
+		}
+		
+		private ActionListener acciones = new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				if (s == 0) {
+					s = 60;
+					m--;
+				}
+				if (m < 0) {
+					JOptionPane.showMessageDialog(rootPane, "<html>Tiempo Finalizado<br>Examen Terminado</html>");
+					m = 0;
+					s = 0;
+					tiempo.stop();
+				} else {
+
+					s--;
+					if (s < 10) {
+						labelS.setText("0" + s + " minutos");
+						flag = false;
+					}
+					if (m < 10) {
+						labelM.setText("Tiempo 0" + m + ":");
+						if (s < 10) {
+							labelS.setText("0" + s + " minutos");
+						} else {
+							labelS.setText("" + s + " minutos");
+						}
+						flag = false;
+					}
+					if (flag) {
+						labelM.setText("Tiempo " + m + ":");
+						labelS.setText("" + s + " minutos");
+					}
+				}
+			}
+		};
+	}
+	
 }
+
+

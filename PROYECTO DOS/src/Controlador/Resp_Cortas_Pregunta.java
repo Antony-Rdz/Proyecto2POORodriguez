@@ -27,8 +27,12 @@ public class Resp_Cortas_Pregunta extends Pregunta {
 	 * Metodo que realiza el proceso de preguntar retorna "true" si la respuesta es
 	 * correcta y "false" si es incorrecta.
 	 */
-
+	@Override
 	public boolean buscar() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	/*public boolean buscar() {
 		System.out.print(getEnunciado() + ": ");
 		if (getRespuestaCorta().equalsIgnoreCase(complementos.leerDeTeclado())) {
 			System.out.println("CORRECTO\n");
@@ -39,7 +43,7 @@ public class Resp_Cortas_Pregunta extends Pregunta {
 			Exam.preg_malas++;
 			return false;
 		}
-	}
+	}*/
 
 	/**
 	 * Devuelve la respuesta correcta.

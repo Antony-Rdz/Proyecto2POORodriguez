@@ -25,7 +25,6 @@ public class archivos {
 		String texto = "";
 		try {
 			BufferedReader bf = new BufferedReader(new FileReader(direccion));
-			
 			String bfRead = null;
 			while ((bfRead = bf.readLine()) != null) {
 				texto = texto + bfRead + "\n";

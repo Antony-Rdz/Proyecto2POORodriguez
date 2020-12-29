@@ -13,15 +13,23 @@ public class Exam {
 	//public static ArrayList<almacen> almacenDePregunta = new ArrayList<almacen>(); // un arraylist que almacena todo															// tipo de preguntas.
 	public static ArrayList<estudiante> datosEstudiantes = new ArrayList<estudiante>();
 
-	public  ArrayList<Selec_Mul_Pregunta> selecmulpreg = new ArrayList<Selec_Mul_Pregunta>();
-	public ArrayList<TFpreguntas> tfpreg = new ArrayList<TFpreguntas>();
-	public  ArrayList<Resp_Cortas_Pregunta> rcpreg = new ArrayList<Resp_Cortas_Pregunta>();
 	public ArrayList<Object> Inventario = new ArrayList<Object>();
 
 	public static int preg_buenas; // contador de buenas
 	public static int preg_malas; // contador de malas
 	public static int preg_sinTerminar;
 	public static int numPreg = 1, puntajeTotal = 0, Intentos = 5;
+	
+///////////////////////////////////////////////////////////////////////////////////////////////	
+	public  ArrayList<Selec_Mul_Pregunta> selecmulpreg = new ArrayList<Selec_Mul_Pregunta>();
+	public ArrayList<TFpreguntas> tfpreg = new ArrayList<TFpreguntas>();
+	public  ArrayList<Resp_Cortas_Pregunta> rcpreg = new ArrayList<Resp_Cortas_Pregunta>();
+	public int tiempo;
+	public int totalPreguntas;
+	public int smTT;
+	public int tfTT;
+	public int rcTT;
+///////////////////////////////////////////////////////////////////////////////////////////////		
 	
 	/**
 	 * Agrega preguntas de seleccion multiple en el almacen de preguntas.
@@ -61,10 +69,45 @@ public class Exam {
 		 * almacen auxiliar = new almacen(PreguntaRC); almacenDePregunta.add(auxiliar);
 		 */
 	}
-	
-	public int getCantidadRespuestasSM() {
 		
-		return 0;
+	public int getTiempo() {
+		return tiempo;
+	}
+
+	public void setTiempo(int tiempo) {
+		this.tiempo = tiempo;
+	}
+
+	public int getTotalPreguntas() {
+		return totalPreguntas;
+	}
+
+	public void setTotalPreguntas(int totalPreguntas) {
+		this.totalPreguntas = totalPreguntas;
+	}
+
+	public int getSmTT() {
+		return smTT;
+	}
+
+	public void setSmTT(int smTT) {
+		this.smTT = smTT;
+	}
+
+	public int getTfTT() {
+		return tfTT;
+	}
+
+	public void setTfTT(int tfTT) {
+		this.tfTT = tfTT;
+	}
+
+	public int getRcTT() {
+		return rcTT;
+	}
+
+	public void setRcTT(int rcTT) {
+		this.rcTT = rcTT;
 	}
 
 	/**

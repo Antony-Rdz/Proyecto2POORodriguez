@@ -1,3 +1,0 @@
-{"Seleccion Multiple1":{"Enunciado":"enunciado 1\t","IndexCorrecto":3,"StrRespuesta":["resp1","resp2","resp3","resp4","resp5","resp6"],"peso":2,"RespCorrecta":"resp4"}}
-{"Seleccion Multiple2":{"Enunciado":"otro enunciado 2","IndexCorrecto":1,"StrRespuesta":["alternativa 1","otra 2","otra 3 ","otra 4"],"peso":3,"RespCorrecta":"otra 2"}}
-{"Seleccion Multiple3":{"Enunciado":"asd123xd","IndexCorrecto":0,"StrRespuesta":["a?12","be","ce","de"],"peso":1,"RespCorrecta":"a?12"}}
