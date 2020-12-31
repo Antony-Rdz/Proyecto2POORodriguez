@@ -35,7 +35,7 @@ public class ConvierteExamenJson {
 	int totalPreguntasVerdFals = 1;
 	int totalPreguntasRespCort = 1;
 
-	public void guardarenArchivo(String direccion, String Tiempo,int totalPreguntas) {
+	public void guardarenArchivo(String direccion, String Tiempo,int totalPreguntas,int formaExamen) {
 		archivos = new archivos();
 		Pregunta = new JSONObject();
 		int time;
@@ -44,7 +44,7 @@ public class ConvierteExamenJson {
 		}else {
 			time = Integer.parseInt(Tiempo);
 		}
-		
+		Pregunta.put("formaExamen", formaExamen);
 		Pregunta.put("TotalPreguntas", totalPreguntas);
 		Pregunta.put("Tiempo", time);
 		
@@ -147,7 +147,7 @@ public class ConvierteExamenJson {
 		
 		bytes = resultadoAlumno.toString().getBytes();
 		codificado = DatatypeConverter.printBase64Binary(bytes);
-		System.out.println("Guardo en dir: "+direccion);
+		//System.out.println("Guardo en dir: "+direccion);
 		archivos.escribirArchivo(new File(direccion+".json"), codificado);
 	}
 	

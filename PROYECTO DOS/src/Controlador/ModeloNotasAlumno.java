@@ -7,13 +7,9 @@ public class ModeloNotasAlumno {
 	int[] puntajeAlumno;
 	int[] puntajeExamen;
 	
-	/*public ModeloNotasAlumno(String[] respuestaAlumno,String[] respuestaExamen,int[] puntajeAlumno,int[] puntajeExamen){
-		this.respuestaAlumno = respuestaAlumno;
-		this.respuestaExamen = respuestaExamen;
-		this.puntajeAlumno = puntajeAlumno;
-		this.puntajeExamen = puntajeExamen;
-	}*/
-	
+	public ModeloNotasAlumno() {
+		
+	}
 	
 	public String[] getRespuestaAlumno() {
 		return respuestaAlumno;

@@ -79,6 +79,8 @@ public class AlumnoGUI extends JFrame {
 	String nombreAlumno;
 	int fila;
 	String profe;
+	int formaExamen;
+	
 	
 	public static void main(String[] args) {
 		try {
@@ -499,7 +501,7 @@ public class AlumnoGUI extends JFrame {
 		JPanel panelImagen = new JPanel(new BorderLayout());
 		panelImagen.setBorder(BorderFactory.createLineBorder(new Color(33, 48, 71), 2, true));
 		panelContenedorIzquierdo.add(panelImagen,BorderLayout.CENTER);
-		JPanel panelImagenInterno = new JPanel(/*new BorderLayout()*/);
+		JPanel panelImagenInterno = new JPanel();
 		panelImagenInterno.setLayout(new BoxLayout(panelImagenInterno, BoxLayout.Y_AXIS));
 		panelImagen.add(panelImagenInterno,BorderLayout.CENTER);
 		
@@ -546,13 +548,20 @@ public class AlumnoGUI extends JFrame {
 		
 		JPanel panelInfo = new JPanel(new BorderLayout());
 		panelImagenInterno.add(panelInfo);
-		JLabel labelInfoUser = new JLabel("Usuario: "+getNombreAlumno());
+		JLabel labelInfoUser = new JLabel();
+		labelInfoUser.setText("<html><font color=\"white\">Usuario: </font>"+ getNombreAlumno() +"</html>");
 		labelInfoUser.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		labelInfoUser.setForeground(new Color(62,208,162));
+		
+		
 		labelInfoUser.setHorizontalAlignment(SwingConstants.CENTER);
 		panelInfo.add(labelInfoUser,BorderLayout.CENTER);
 		
-		JLabel labelInfoProfe = new JLabel("Docente: "+getProfesorAlumno());
+		JLabel labelInfoProfe = new JLabel();
+		labelInfoProfe.setText("<html><font color=\"white\">Docente:  </font>"+ getProfesorAlumno() +"</html>");
 		labelInfoProfe.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		labelInfoProfe.setForeground(new Color(221,199,17));
+		
 		labelInfoProfe.setHorizontalAlignment(SwingConstants.CENTER);
 		panelInfo.add(labelInfoProfe,BorderLayout.SOUTH);
 		panelImagenInterno.add(Box.createRigidArea(new Dimension(0, 100)));
@@ -764,14 +773,18 @@ public class AlumnoGUI extends JFrame {
 		File archivos = new File(ubicacion);
 		String[] archivoElegido = archivos.list();
 		Controlador.archivos lector = new Controlador.archivos();
+		System.out.println("el archivo que eleji fue: "+archivoElegido[fila]);
+		System.out.println("y esta en la direccion:\n"+ubicacion + "\\" + archivoElegido[fila]);
 		try {
+			
 			panelMayorAlumno.removeAll();
 			panelMayorAlumno.add(new ExamenGUI(conversor.generaExamen(new File(ubicacion + "\\" + archivoElegido[fila])),getProfesorAlumno(),getNameExamen(),getNombreAlumno()));
 			panelMayorAlumno.updateUI();
 			pack();
 			setLocationRelativeTo(null);
 		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, e.getMessage());
+			System.out.println(e);
+			JOptionPane.showMessageDialog(null, "estoy aca "+e.getMessage());
 		}
 
 	}
@@ -913,6 +926,17 @@ public class AlumnoGUI extends JFrame {
 					|| (letraIngresada == KeyEvent.VK_BACK_SPACE) || (letraIngresada == KeyEvent.VK_DELETE)) {
 				arg0.consume();
 			}
+			if(textRut != null) {
+				if (textRut.getText().length() > 9) {
+					arg0.consume();
+				}
+			}
+			if(textRutInicSes != null) {
+				if (textRutInicSes.getText().length() > 9) {
+					arg0.consume();
+				}
+			}
+			
 		}
 
 	}
@@ -1019,6 +1043,7 @@ public class AlumnoGUI extends JFrame {
 		private int m = 10, s = 0;
 		private JLabel labelM;
 		private JLabel labelS;
+		
 
 		public ExamenGUI() {
 		}
@@ -1069,16 +1094,13 @@ public class AlumnoGUI extends JFrame {
 
 		public JPanel iniciador(Exam examen,String nombreProfesor,String nombreExamen,String nombreAlumno) {
 			System.out.println("nP: "+nombreProfesor+ " nE: "+nombreExamen+ "  nA: "+nombreAlumno);
-			
-			puntajesUser = new int[examen.selecmulpreg.size() + examen.tfpreg.size() + examen.rcpreg.size()];
-			puntajeExam = new int[puntajesUser.length];
-			respuestasCorrectasEXM = new String[examen.selecmulpreg.size() + examen.tfpreg.size() + examen.rcpreg.size()];
+			System.out.println("entre a la clase y la forma del examen es : "+examen.getFormaExamen());
+			formaExamen = examen.getFormaExamen();
 			m = examen.getTiempo();
 			if(m > 0) {
 				tiempo = new Timer(1000, acciones);
 				tiempo.start();
 			}
-			respuestaSeleccionadaUser = new String[examen.selecmulpreg.size() + examen.tfpreg.size() + examen.rcpreg.size()];
 
 			JPanel panelIniciador = new JPanel(new BorderLayout(0,20));
 			panelIniciador.setBorder(new EmptyBorder(20, 20, 20, 20));
@@ -1204,16 +1226,77 @@ public class AlumnoGUI extends JFrame {
 			labelCantidadPreguntas = new JLabel();
 			labelCantidadPreguntas.setFont(new Font("Tahoma", Font.PLAIN, 15));
 
-			labelCantidadPreguntas.setText("Pregunta " + (iterador + 1) + " de "
-					+ (examen.selecmulpreg.size() + examen.tfpreg.size() + examen.rcpreg.size()));
+			//labelCantidadPreguntas.setText("Pregunta " + (iterador + 1) + " de "
+			//		+ (examen.selecmulpreg.size() + examen.tfpreg.size() + examen.rcpreg.size()));
 			labelCantidadPreguntas.setHorizontalAlignment(SwingConstants.CENTER);
 			panelInfoPreg.add(labelCantidadPreguntas);
 
 			labelTipoDePregunta = new JLabel();
 			labelTipoDePregunta.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			labelTipoDePregunta.setText("SELECCIÓN MULTIPLE");
+			//labelTipoDePregunta.setText("SELECCIÓN MULTIPLE");
 			labelTipoDePregunta.setHorizontalAlignment(SwingConstants.CENTER);
 			panelInfoPreg.add(labelTipoDePregunta);
+			
+			System.out.println("llegue al primer switch ");
+			switch (formaExamen) {
+			case 1: {
+				respuestaSeleccionadaUser = new String[examen.selecmulpreg.size() + examen.tfpreg.size() + examen.rcpreg.size()];
+				puntajesUser = new int[examen.selecmulpreg.size() + examen.tfpreg.size() + examen.rcpreg.size()];
+				puntajeExam = new int[puntajesUser.length];
+				respuestasCorrectasEXM = new String[examen.selecmulpreg.size() + examen.tfpreg.size() + examen.rcpreg.size()];
+				labelCantidadPreguntas.setText("Pregunta " + (iterador + 1) + " de "+ (examen.selecmulpreg.size() + examen.tfpreg.size() + examen.rcpreg.size()));
+				labelTipoDePregunta.setText("SELECCIÓN MULTIPLE");
+				break;
+			}
+			case 2: {
+				respuestaSeleccionadaUser = new String[examen.selecmulpreg.size() + examen.tfpreg.size() + examen.rcpreg.size()];
+				puntajesUser = new int[examen.selecmulpreg.size() + examen.tfpreg.size() + examen.rcpreg.size()];
+				puntajeExam = new int[puntajesUser.length];
+				respuestasCorrectasEXM = new String[examen.selecmulpreg.size() + examen.tfpreg.size() + examen.rcpreg.size()];
+				labelCantidadPreguntas.setText("Pregunta " + (iterador + 1) + " de "+ (examen.selecmulpreg.size() + examen.tfpreg.size() + examen.rcpreg.size()));
+				labelTipoDePregunta.setText("VERDADERO O FALSO");
+				break;
+			}
+			case 3: {
+				respuestaSeleccionadaUser = new String[examen.selecmulpreg.size() + examen.tfpreg.size() + examen.rcpreg.size()];
+				puntajesUser = new int[examen.selecmulpreg.size() + examen.tfpreg.size() + examen.rcpreg.size()];
+				puntajeExam = new int[puntajesUser.length];
+				respuestasCorrectasEXM = new String[examen.selecmulpreg.size() + examen.tfpreg.size() + examen.rcpreg.size()];
+				labelCantidadPreguntas.setText("Pregunta " + (iterador + 1) + " de "+ (examen.selecmulpreg.size() + examen.tfpreg.size() + examen.rcpreg.size()));
+				labelTipoDePregunta.setText("RESPUESTA CORTA");
+				break;
+			}
+			case 4: {
+				labelCantidadPreguntas.setText("Pregunta " + (iterador + 1) + " de "+ (examen.selecmulpreg.size()));
+				respuestaSeleccionadaUser = new String[examen.selecmulpreg.size()];
+				puntajesUser = new int[examen.selecmulpreg.size()];
+				puntajeExam = new int[puntajesUser.length];
+				respuestasCorrectasEXM = new String[examen.selecmulpreg.size()];
+				labelTipoDePregunta.setText("SELECCION MULTIPLE");
+				break;
+			}
+			case 5: {
+				System.out.println("entre a los labels ");
+				labelCantidadPreguntas.setText("Pregunta " + (iterador + 1) + " de "+ (examen.tfpreg.size()));
+				respuestaSeleccionadaUser = new String[examen.tfpreg.size()];
+				puntajesUser = new int[examen.tfpreg.size()];
+				puntajeExam = new int[puntajesUser.length];
+				respuestasCorrectasEXM = new String[examen.tfpreg.size()];
+				labelTipoDePregunta.setText("VERDADERO O FALSO");
+				break;
+			}
+			case 6: {
+				labelCantidadPreguntas.setText("Pregunta " + (iterador + 1) + " de "+ (examen.rcpreg.size()));
+				respuestaSeleccionadaUser = new String[examen.rcpreg.size()];
+				puntajesUser = new int[examen.rcpreg.size()];
+				puntajeExam = new int[puntajesUser.length];
+				respuestasCorrectasEXM = new String[examen.rcpreg.size()];
+				labelTipoDePregunta.setText("RESPUESTA CORTA");
+				break;
+			}
+			default:
+				throw new IllegalArgumentException("Unexpected value: " + formaExamen);
+			}
 			/***************************************************************************/
 
 			/************************* PANEL DEL ENUNCIADO ******************************/
@@ -1228,8 +1311,27 @@ public class AlumnoGUI extends JFrame {
 			textEnunciado.setForeground(Color.WHITE);
 			textEnunciado.setEditable(false);
 			textEnunciado.setPreferredSize(new Dimension(900, 220));
-			textEnunciado.setText(examen.selecmulpreg.get(0).getEnunciado());
 
+			switch (formaExamen) {
+			case 1:
+			case 4: {
+				textEnunciado.setText(examen.selecmulpreg.get(0).getEnunciado());
+				break;
+			}
+			case 2:
+			case 5: {
+				textEnunciado.setText(examen.tfpreg.get(0).getEnunciado());
+				break;
+			}
+			case 3:
+			case 6: {
+				textEnunciado.setText(examen.rcpreg.get(0).getEnunciado());
+				break;
+			}
+			default:
+				throw new IllegalArgumentException("Unexpected value: " + formaExamen);
+			}
+			
 			scroll = new JScrollPane();
 			scroll.setViewportView(textEnunciado);
 
@@ -1243,14 +1345,35 @@ public class AlumnoGUI extends JFrame {
 			panelContenedorRespuestasAbsoluto.setPreferredSize(new Dimension(900, 250));
 
 			panelRespuestaSelecMultiple = new JPanel(new GridLayout(5, 4, 20, 20/* 5, 4, 50, 30 */));
-			agregaBotonesDinamicoSelecMult(examen.selecmulpreg.get(iterador));
-			panelContenedorRespuestasAbsoluto.add(panelRespuestaSelecMultiple, BorderLayout.CENTER);
 
 			panelRespuestaTrueFalse = new JPanel(new GridLayout(0, 2, 10, 0));
 			panelRespuestaTrueFalse.setPreferredSize(panelRespuestaSelecMultiple.getPreferredSize());
 
 			panelRespuestaCorta = new JPanel(new BorderLayout());
 			panelRespuestaCorta.setBorder(new EmptyBorder(60, 20, 60, 20));
+			
+			switch (formaExamen) {
+			case 1: 
+			case 4: {
+				panelContenedorRespuestasAbsoluto.add(panelRespuestaSelecMultiple, BorderLayout.CENTER);
+				agregaBotonesDinamicoSelecMult(examen.selecmulpreg.get(iterador));
+				break;
+			}
+			case 2:
+			case 5: {
+				panelContenedorRespuestasAbsoluto.add(panelRespuestaTrueFalse, BorderLayout.CENTER);
+				agregaBotonesDinamicoTrueFalse(examen.tfpreg.get(iterador));
+				break;
+			}
+			case 3:
+			case 6: {
+				panelContenedorRespuestasAbsoluto.add(panelRespuestaCorta, BorderLayout.CENTER);
+				agregaTextPaneDinamico(examen.rcpreg.get(iterador));
+				break;
+			}
+			default:
+				throw new IllegalArgumentException("Unexpected value: " + formaExamen);
+			}
 
 			panelContenedorPregunta.add(panelContenedorRespuestasAbsoluto, BorderLayout.CENTER);
 			/***************************************************************************/
@@ -1264,11 +1387,44 @@ public class AlumnoGUI extends JFrame {
 			btnSiguiente.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					try {
-						if (iterador < (examen.selecmulpreg.size() + examen.tfpreg.size() + examen.rcpreg.size()) - 1) {
-							iterador++;
-							labelCantidadPreguntas.setText("Pregunta " + (iterador + 1) + " de "
-									+ (examen.selecmulpreg.size() + examen.tfpreg.size() + examen.rcpreg.size()));
-							AvanzaRetrocedePregunta(examen);
+						switch (formaExamen) {
+						case 1:
+						case 2:
+						case 3: {
+							if (iterador < (examen.selecmulpreg.size() + examen.tfpreg.size() + examen.rcpreg.size()) - 1) {
+								iterador++;
+								labelCantidadPreguntas.setText("Pregunta " + (iterador + 1) + " de "
+										+ (examen.selecmulpreg.size() + examen.tfpreg.size() + examen.rcpreg.size()));
+								AvanzaRetrocedePregunta(examen);
+							}
+							break;
+						}
+						case 4: {
+							if (iterador < examen.selecmulpreg.size() - 1) {
+								iterador++;
+								labelCantidadPreguntas.setText("Pregunta " + (iterador + 1) + " de "+ examen.selecmulpreg.size());
+								AvanzaRetrocedePregunta(examen);
+							}
+							break;
+						}
+						case 5: {
+							if (iterador < examen.tfpreg.size() - 1) {
+								iterador++;
+								labelCantidadPreguntas.setText("Pregunta " + (iterador + 1) + " de "+ examen.tfpreg.size());
+								AvanzaRetrocedePregunta(examen);
+							}
+							break;
+						}
+						case 6: {
+							if (iterador < examen.rcpreg.size() - 1) {
+								iterador++;
+								labelCantidadPreguntas.setText("Pregunta " + (iterador + 1) + " de "+ examen.rcpreg.size());
+								AvanzaRetrocedePregunta(examen);
+							}
+							break;
+						}
+						default:
+							throw new IllegalArgumentException("Unexpected value: " + formaExamen);
 						}
 					} catch (Exception e) {
 						System.err.println(e);
@@ -1281,11 +1437,25 @@ public class AlumnoGUI extends JFrame {
 			btnAnterior.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					try {
-						if (iterador > 0) {
+						if (iterador > 0 && (formaExamen == 1 || formaExamen == 2 || formaExamen == 3)) {
 							iterador--;
-							labelCantidadPreguntas.setText("Pregunta " + (iterador + 1) + " de "
-									+ (examen.selecmulpreg.size() + examen.tfpreg.size() + examen.rcpreg.size()));
+							labelCantidadPreguntas.setText("Pregunta " + (iterador + 1) + " de "+ (examen.selecmulpreg.size() + examen.tfpreg.size() + examen.rcpreg.size()));
 							panelRespuestaSelecMultiple.removeAll();
+							AvanzaRetrocedePregunta(examen);
+						}
+						if(iterador > 0 && formaExamen == 4) {
+							iterador--;
+							labelCantidadPreguntas.setText("Pregunta " + (iterador + 1) + " de "+ examen.selecmulpreg.size());
+							AvanzaRetrocedePregunta(examen);
+						}
+						if(iterador > 0 && formaExamen == 5) {
+							iterador--;
+							labelCantidadPreguntas.setText("Pregunta " + (iterador + 1) + " de "+ examen.tfpreg.size());
+							AvanzaRetrocedePregunta(examen);
+						}
+						if(iterador > 0 && formaExamen == 6) {
+							iterador--;
+							labelCantidadPreguntas.setText("Pregunta " + (iterador + 1) + " de "+ examen.rcpreg.size());
 							AvanzaRetrocedePregunta(examen);
 						}
 					} catch (Exception e) {
@@ -1301,17 +1471,77 @@ public class AlumnoGUI extends JFrame {
 		}
 
 		void AvanzaRetrocedePregunta(Exam examen) {
-			if (iterador < examen.selecmulpreg.size()) {
-				pack();
-				SelMulActualizaPanel(examen);
-			} else if (iterador >= (examen.selecmulpreg.size())
-					&& iterador < (examen.selecmulpreg.size() + examen.tfpreg.size())) {
-				pack();
-				TrueFalseActualizaPanel(examen);
-			} else if (iterador >= (examen.selecmulpreg.size() + examen.tfpreg.size())
-					&& iterador < (examen.selecmulpreg.size() + examen.tfpreg.size() + examen.rcpreg.size())) {
-				pack();
-				RespCortActualizaPanel(examen);
+			
+			switch (formaExamen) {
+			case 1: {//selec mul - tf - rc
+				if (iterador < examen.selecmulpreg.size()) {
+					pack();
+					SelMulActualizaPanel(examen);
+				} else if (iterador >= (examen.selecmulpreg.size())
+						&& iterador < (examen.selecmulpreg.size() + examen.tfpreg.size())) {
+					pack();
+					TrueFalseActualizaPanel(examen);
+				} else if (iterador >= (examen.selecmulpreg.size() + examen.tfpreg.size()) && iterador < (examen.selecmulpreg.size() + examen.tfpreg.size() + examen.rcpreg.size())) {
+					pack();
+					RespCortActualizaPanel(examen);
+				}
+				break;
+			}
+			case 2: {//tf - selec mul - rc
+				if (iterador < examen.tfpreg.size()) {
+					pack();
+					TrueFalseActualizaPanel(examen);
+				} else if (iterador >= (examen.tfpreg.size())
+						&& iterador < (examen.selecmulpreg.size() + examen.tfpreg.size())) {
+					pack();
+					SelMulActualizaPanel(examen);
+				} else if (iterador >= (examen.tfpreg.size() + examen.selecmulpreg.size())
+						&& iterador < (examen.selecmulpreg.size() + examen.tfpreg.size() + examen.rcpreg.size())) {
+					pack();
+					RespCortActualizaPanel(examen);
+				}
+				break;
+			}
+			case 3: {//rc - tf - selec mul
+				if (iterador < examen.rcpreg.size()) {
+					pack();
+					RespCortActualizaPanel(examen);
+					
+				} else if (iterador >= (examen.rcpreg.size())
+						&& iterador < (examen.rcpreg.size() + examen.tfpreg.size())) {
+					pack();
+					TrueFalseActualizaPanel(examen);
+					
+				} else if (iterador >= (examen.tfpreg.size() + examen.rcpreg.size())
+						&& iterador < (examen.selecmulpreg.size() + examen.tfpreg.size() + examen.rcpreg.size())) {
+					pack();
+					SelMulActualizaPanel(examen);
+				}
+				break;
+			}
+			case 4: {
+				if (iterador < examen.selecmulpreg.size()) {
+					pack();
+					SelMulActualizaPanel(examen);
+				}
+				break;
+			}
+			case 5: {
+				if (iterador < examen.tfpreg.size()) {
+					pack();
+					TrueFalseActualizaPanel(examen);
+				}
+				break;
+			}
+			case 6: {
+				if (iterador < examen.rcpreg.size()) {
+					pack();
+					RespCortActualizaPanel(examen);
+				}
+				break;
+			}
+			default:
+				throw new IllegalArgumentException("Unexpected value: " + formaExamen);
 			}
 		}
 
@@ -1322,8 +1552,26 @@ public class AlumnoGUI extends JFrame {
 
 			panelRespuestaSelecMultiple.removeAll();
 			labelTipoDePregunta.setText("SELECCIÓN MULTIPLE");
-			textEnunciado.setText(examen.selecmulpreg.get(iterador).getEnunciado());
-			agregaBotonesDinamicoSelecMult(examen.selecmulpreg.get(iterador));
+			switch (formaExamen) {
+			case 1:
+			case 4: {
+				textEnunciado.setText(examen.selecmulpreg.get(iterador).getEnunciado());
+				agregaBotonesDinamicoSelecMult(examen.selecmulpreg.get(iterador));
+				break;
+			}
+			case 2: {
+				textEnunciado.setText(examen.selecmulpreg.get(iterador - examen.tfpreg.size()).getEnunciado());
+				agregaBotonesDinamicoSelecMult(examen.selecmulpreg.get(iterador - examen.tfpreg.size()));
+				break;
+			}
+			case 3: {
+				textEnunciado.setText(examen.selecmulpreg.get(iterador - examen.tfpreg.size()- examen.rcpreg.size()).getEnunciado());
+				agregaBotonesDinamicoSelecMult(examen.selecmulpreg.get(iterador - examen.tfpreg.size()- examen.rcpreg.size()));
+				break;
+			}
+			default:
+				throw new IllegalArgumentException("Unexpected value: " + formaExamen);
+			}
 			RbutonSeleccionado(botonesSelecMult);
 		}
 
@@ -1334,8 +1582,26 @@ public class AlumnoGUI extends JFrame {
 			panelRespuestaTrueFalse.removeAll();
 
 			labelTipoDePregunta.setText("VERDADERO O FALSO");
-			textEnunciado.setText(examen.tfpreg.get(iterador - examen.selecmulpreg.size()).getEnunciado());
-			agregaBotonesDinamicoTrueFalse(examen.tfpreg.get(iterador - examen.selecmulpreg.size()));
+			switch (formaExamen) {
+			case 1: {
+				textEnunciado.setText(examen.tfpreg.get(iterador - examen.selecmulpreg.size()).getEnunciado());
+				agregaBotonesDinamicoTrueFalse(examen.tfpreg.get(iterador - examen.selecmulpreg.size()));
+				break;
+			}
+			case 2:
+			case 5: {
+				textEnunciado.setText(examen.tfpreg.get(iterador).getEnunciado());
+				agregaBotonesDinamicoTrueFalse(examen.tfpreg.get(iterador));
+				break;
+			}
+			case 3: {
+				textEnunciado.setText(examen.tfpreg.get(iterador - examen.rcpreg.size()).getEnunciado());
+				agregaBotonesDinamicoTrueFalse(examen.tfpreg.get(iterador - examen.rcpreg.size()));
+				break;
+			}
+			default:
+				throw new IllegalArgumentException("Unexpected value: " + formaExamen);
+			}
 			RbutonSeleccionado(botonesTF);
 		}
 
@@ -1345,8 +1611,26 @@ public class AlumnoGUI extends JFrame {
 			panelContenedorRespuestasAbsoluto.updateUI();
 			panelRespuestaCorta.removeAll();
 			labelTipoDePregunta.setText("RESPUESTA CORTA");
-			textEnunciado.setText(examen.rcpreg.get(iterador - examen.selecmulpreg.size() - examen.tfpreg.size()).getEnunciado());
-			agregaTextPaneDinamico(examen.rcpreg.get(iterador - examen.selecmulpreg.size() - examen.tfpreg.size()));
+			switch (formaExamen) {
+			case 1: {
+				textEnunciado.setText(examen.rcpreg.get(iterador - examen.selecmulpreg.size() - examen.tfpreg.size()).getEnunciado());
+				agregaTextPaneDinamico(examen.rcpreg.get(iterador - examen.selecmulpreg.size() - examen.tfpreg.size()));
+				break;
+			}
+			case 2: {
+				textEnunciado.setText(examen.rcpreg.get(iterador - examen.selecmulpreg.size() - examen.tfpreg.size()).getEnunciado());
+				agregaTextPaneDinamico(examen.rcpreg.get(iterador - examen.selecmulpreg.size() - examen.tfpreg.size()));
+				break;
+			}
+			case 3:
+			case 6: {
+				textEnunciado.setText(examen.rcpreg.get(iterador).getEnunciado());
+				agregaTextPaneDinamico(examen.rcpreg.get(iterador));
+				break;
+			}
+			default:
+				throw new IllegalArgumentException("Unexpected value: " + formaExamen);
+			}
 		}
 
 		public void RbutonSeleccionado(ArrayList<JRadioButton> botones) {

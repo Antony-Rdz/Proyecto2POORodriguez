@@ -114,14 +114,29 @@ public class AdminGUI extends JFrame {
 		setTitle("Admin");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		panelMayorRegistro = new JPanel();
+		panelMayorRegistro = new JPanel(new BorderLayout());
 
 		// panelMayorRegistro.setBackground(Color.WHITE);
-		panelMayorRegistro.setLayout(new BoxLayout(panelMayorRegistro, BoxLayout.Y_AXIS));
+		//panelMayorRegistro.setLayout(new BoxLayout(panelMayorRegistro, BoxLayout.Y_AXIS));
 		setContentPane(panelMayorRegistro);
 		// panelMayorRegistro.add(agregaPorfesor());
-		// panelMayorRegistro.add(inicioSesionPanel());
-		panelMayorRegistro.add(MenuAdmin());
+		JMenuBar barra = new JMenuBar();
+		panelMayorRegistro.add(barra,BorderLayout.NORTH);
+		JMenu opciones = new JMenu("Opciones");
+		barra.add(opciones);
+		JMenuItem opcionVolver = new JMenuItem("Volver");
+		opcionVolver.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				dispose();
+				InicSes = new InicioSesion();
+			}
+		});
+		opciones.add(opcionVolver);
+		
+		 panelMayorRegistro.add(inicioSesionPanel(),BorderLayout.CENTER);
+		//panelMayorRegistro.add(MenuAdmin());
 		pack();
 		setResizable(false);
 		setLocationRelativeTo(null);
@@ -150,33 +165,46 @@ public class AdminGUI extends JFrame {
 
 	public JPanel inicioSesionPanel() {
 		adm = new Controlador.admin();
-		JPanel IniciadorInicioSesionAdmin = new JPanel();
-		IniciadorInicioSesionAdmin.setBorder(new EmptyBorder(3, 3, 3, 3));
-		IniciadorInicioSesionAdmin.setLayout(new BoxLayout(IniciadorInicioSesionAdmin, BoxLayout.Y_AXIS));
+		JPanel IniciadorInicioSesionAdmin = new JPanel(new BorderLayout(0,10));
+		IniciadorInicioSesionAdmin.setBorder(new EmptyBorder(30, 30, 30, 30));
 
-		IniciadorInicioSesionAdmin.add(Box.createRigidArea(new Dimension(0, 10)));
+		JPanel panelLabel = new JPanel(new BorderLayout(0,40));
+		panelLabel.setBorder(new EmptyBorder(0,20,20,20));
+		IniciadorInicioSesionAdmin.add(panelLabel,BorderLayout.NORTH);
 
-		JPanel panelLabel = new JPanel();
-		IniciadorInicioSesionAdmin.add(panelLabel);
+		JPanel panelTextField = new JPanel(new BorderLayout(0,5));
+		IniciadorInicioSesionAdmin.add(panelTextField,BorderLayout.CENTER);
 
-		IniciadorInicioSesionAdmin.add(Box.createRigidArea(new Dimension(0, 25)));
+		JPanel panelBotones = new JPanel(new BorderLayout());
+		IniciadorInicioSesionAdmin.add(panelBotones,BorderLayout.SOUTH);
 
-		JPanel panelTextField = new JPanel();
-		IniciadorInicioSesionAdmin.add(panelTextField);
-
-		IniciadorInicioSesionAdmin.add(Box.createRigidArea(new Dimension(0, 30)));
-
-		JPanel panelBotones = new JPanel(new GridLayout(0, 2, 50, 0));
-		IniciadorInicioSesionAdmin.add(panelBotones);
-
-		IniciadorInicioSesionAdmin.add(Box.createRigidArea(new Dimension(0, 10)));
-
-		JLabel encabezado = new JLabel("<html>Ingrese clave  <br> administrador</html>");
-		encabezado.setFont(new Font("Tahoma", Font.PLAIN, 25));
+		JLabel encabezado = new JLabel("<html><div style='text-align: center;'>" + "Inicio de Sesión<br>Administrador" + "</div></html>");
+		encabezado.setFont(new Font("Tahoma", Font.PLAIN, 30));
 		encabezado.setHorizontalAlignment(SwingConstants.CENTER);
-		panelLabel.add(encabezado, BorderLayout.CENTER);
+		panelLabel.add(encabezado, BorderLayout.NORTH);
+		
+		JLabel lblImagenAdminInicSes = new JLabel();
+		String ubicacionImagen = "";
+		try {
 
-		JPasswordField admPass = new JPasswordField(0);
+			ubicacionImagen = new File(".").getCanonicalPath() + "\\res\\admin.png";
+		} catch (Exception e) {
+			System.out.println(e.toString());
+		}
+
+		ImageIcon imagenAlumno = new ImageIcon(ubicacionImagen);
+		lblImagenAdminInicSes.setIcon(new ImageIcon(imagenAlumno.getImage().getScaledInstance(200, 200, Image.SCALE_DEFAULT)));
+		lblImagenAdminInicSes.setHorizontalAlignment(SwingConstants.CENTER);
+		panelLabel.add(lblImagenAdminInicSes, BorderLayout.CENTER);
+
+		
+		JLabel labelPass = new JLabel("Contraseña");
+		labelPass.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		labelPass.setHorizontalAlignment(SwingConstants.LEFT);
+		panelTextField.add(labelPass,BorderLayout.NORTH);
+		
+		
+		JPasswordField admPass = new JPasswordField();
 		admPass.setForeground(Color.BLACK);
 		admPass.addKeyListener(new KeyAdapter() {
 			@Override
@@ -206,7 +234,7 @@ public class AdminGUI extends JFrame {
 		admPass.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		admPass.setPreferredSize(new Dimension(200, 30));
 		admPass.setBackground(Color.WHITE);
-		panelTextField.add(admPass);
+		panelTextField.add(admPass,BorderLayout.CENTER);
 
 		JButton btnIngresar = new JButton("Ingresar");
 		btnIngresar.addActionListener(new ActionListener() {
@@ -228,17 +256,7 @@ public class AdminGUI extends JFrame {
 		});
 
 		btnIngresar.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		panelBotones.add(btnIngresar);
-		JButton btnVolverInicSes = new JButton("Volver");
-		btnVolverInicSes.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				dispose();
-				InicSes = new InicioSesion();
-			}
-		});
-		btnVolverInicSes.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		panelBotones.add(btnVolverInicSes);
+		panelBotones.add(btnIngresar,BorderLayout.CENTER);
 
 		return IniciadorInicioSesionAdmin;
 	}
@@ -435,7 +453,8 @@ public class AdminGUI extends JFrame {
 		JPanel panelImagen = new JPanel(new BorderLayout());
 		panelImagen.setBorder(BorderFactory.createLineBorder(new Color(33, 48, 71), 2, true));
 		panelContenedorIzquierdo.add(panelImagen,BorderLayout.CENTER);
-		JPanel panelImagenInterno = new JPanel(new BorderLayout());
+		JPanel panelImagenInterno = new JPanel();
+		panelImagenInterno.setLayout(new BoxLayout(panelImagenInterno, BoxLayout.Y_AXIS));
 		panelImagenInterno.setBorder(new EmptyBorder(0, 20, 0, 20));
 		panelImagen.add(panelImagenInterno,BorderLayout.CENTER);
 		
@@ -444,13 +463,31 @@ public class AdminGUI extends JFrame {
 		JMenu menuOpciones = new JMenu("Opciones");
 		menuSuperior.add(menuOpciones);
 		JMenuItem opcionVolver = new JMenuItem("Volver");
+		opcionVolver.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				dispose();
+				new AdminGUI();
+			}
+		});
 		menuOpciones.add(opcionVolver);
 		JMenuItem opcionSalir = new JMenuItem("Salir");
+		opcionSalir.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				System.exit(0);
+			}
+		});
 		menuOpciones.add(opcionSalir);
 		
+		panelImagenInterno.add(Box.createRigidArea(new Dimension(0, 180)));
+		
+		JPanel panelLabelInfo = new JPanel(new BorderLayout(0,0));
+		panelImagenInterno.add(panelLabelInfo);
+		
+		panelImagenInterno.add(Box.createRigidArea(new Dimension(0, 180)));
 		
 		JLabel labelImagenAdmin = new JLabel();
-		JLabel lblImagenProfesor = new JLabel();
 		String ubicacionImagen="";
 		try {
 			ubicacionImagen = new File(".").getCanonicalPath() + "\\res\\admin.png";	
@@ -459,8 +496,17 @@ public class AdminGUI extends JFrame {
 			System.out.println(e.toString());
 		}
 		ImageIcon imagenAdmin = new ImageIcon(ubicacionImagen);
+		labelImagenAdmin.setHorizontalAlignment(SwingConstants.CENTER);
 		labelImagenAdmin.setIcon(new ImageIcon(imagenAdmin.getImage().getScaledInstance(200, 200, Image.SCALE_DEFAULT)));
-		panelImagenInterno.add(labelImagenAdmin, BorderLayout.CENTER);
+		panelLabelInfo.add(labelImagenAdmin, BorderLayout.NORTH);
+		
+		
+		JLabel labelInfoUser = new JLabel();
+		labelInfoUser.setText("<html><font color=\"white\">Admin: </font>Antony Rodriguez</html>");
+		labelInfoUser.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		labelInfoUser.setForeground(new Color(213,18,18));
+		labelInfoUser.setHorizontalAlignment(SwingConstants.CENTER);
+		panelLabelInfo.add(labelInfoUser,BorderLayout.CENTER);
 
 		JTabbedPane PanelControlador = new JTabbedPane();
 		panelContenedorDerecho.add(PanelControlador, BorderLayout.NORTH);
@@ -771,7 +817,6 @@ public class AdminGUI extends JFrame {
 		@Override
 		public void keyTyped(KeyEvent arg0) {
 			JTextField txtnombre = (JTextField)arg0.getComponent();
-
 			String texto=txtnombre.getText().trim();
 			if(texto.length()>0){
 			char primero=texto.charAt(0);

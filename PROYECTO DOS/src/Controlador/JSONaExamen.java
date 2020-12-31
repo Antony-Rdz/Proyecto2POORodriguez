@@ -19,6 +19,7 @@ public class JSONaExamen {
 	JSONArray selmul;
 	JSONArray tf;
 	JSONArray rc;
+	JSONObject formaExam;
 	
 	JSONObject jsonAlumno;
 	
@@ -62,33 +63,75 @@ public class JSONaExamen {
 			}
 			
 		}
+		numeroDeLinea = 0;
+		
+		//System.out.println("LA FORMA DEL EXAMEN ES: "+preg.getInt("formaExamen"));
+		examen.setFormaExamen(preg.getInt("formaExamen"));
 		examen.setTiempo(preg.getInt("Tiempo"));
+		//System.out.println("total preg: "+preg.getInt("TotalPreguntas"));
 		examen.setTotalPreguntas(preg.getInt("TotalPreguntas"));
-		
-		for (int i = 0; i < selmul.length(); i++) {
-			JSONArray arr = selmul.getJSONObject(i).getJSONObject("Seleccion Multiple " + (i + 1)).getJSONArray("StrRespuesta");
-			String[] alternativas = new String[arr.length()];
-			for (int j = 0; j < arr.length(); j++) {
-				alternativas[j] = arr.getString(j);
+		switch (preg.getInt("formaExamen")) {
+		case 1:
+		case 2:
+		case 3:{
+			//System.out.println("estoy antes de entrar a los for");
+			for (int i = 0; i < selmul.length(); i++) {
+				JSONArray arr = selmul.getJSONObject(i).getJSONObject("Seleccion Multiple " + (i + 1)).getJSONArray("StrRespuesta");
+				String[] alternativas = new String[arr.length()];
+				for (int j = 0; j < arr.length(); j++) {
+					alternativas[j] = arr.getString(j);
+				}
+				examen.agregaPregunta(new Selec_Mul_Pregunta(selmul.getJSONObject(i).getJSONObject("Seleccion Multiple " + (i + 1)).getString("Enunciado"), alternativas, selmul.getJSONObject(i).getJSONObject("Seleccion Multiple " + (i + 1)).getInt("IndexCorrecto"), selmul.getJSONObject(i).getJSONObject("Seleccion Multiple " + (i + 1)).getInt("peso")));
 			}
-			examen.agregaPregunta(new Selec_Mul_Pregunta(selmul.getJSONObject(i).getJSONObject("Seleccion Multiple " + (i + 1)).getString("Enunciado"), alternativas, selmul.getJSONObject(i).getJSONObject("Seleccion Multiple " + (i + 1)).getInt("IndexCorrecto"), selmul.getJSONObject(i).getJSONObject("Seleccion Multiple " + (i + 1)).getInt("peso")));
+			//System.out.println("llegue al final de sm");
+			for (int i = 0; i < tf.length(); i++) {
+				examen.agregaPregunta(new TFpreguntas(tf.getJSONObject(i).getJSONObject("Verdadero o Falso " + (i + 1)).getString("Enunciado"), tf.getJSONObject(i).getJSONObject("Verdadero o Falso " + (i + 1)).getBoolean("Respuesta"), tf.getJSONObject(i).getJSONObject("Verdadero o Falso " + (i + 1)).getInt("Peso")));
+			}
+			//System.out.println("llegue al final de tf");
+			for (int i = 0; i < rc.length(); i++) {
+				examen.agregaPregunta(new Resp_Cortas_Pregunta(rc.getJSONObject(i).getJSONObject("Respuesta Corta " + (i + 1)).getString("Enunciado"), rc.getJSONObject(i).getJSONObject("Respuesta Corta " + (i + 1)).getString("Respuesta"), rc.getJSONObject(i).getJSONObject("Respuesta Corta " + (i + 1)).getInt("Peso")));
+			}
+			//System.out.println("llegue al final de rc y al final final");
+			return examen;
 		}
-		
-		for (int i = 0; i < tf.length(); i++) {
-			examen.agregaPregunta(new TFpreguntas(tf.getJSONObject(i).getJSONObject("Verdadero o Falso " + (i + 1)).getString("Enunciado"), tf.getJSONObject(i).getJSONObject("Verdadero o Falso " + (i + 1)).getBoolean("Respuesta"), tf.getJSONObject(i).getJSONObject("Verdadero o Falso " + (i + 1)).getInt("Peso")));
+		case 4: {
+			//System.out.println("entree al caso 4");
+			for (int i = 0; i < selmul.length(); i++) {
+				JSONArray arr = selmul.getJSONObject(i).getJSONObject("Seleccion Multiple " + (i + 1)).getJSONArray("StrRespuesta");
+				String[] alternativas = new String[arr.length()];
+				for (int j = 0; j < arr.length(); j++) {
+					alternativas[j] = arr.getString(j);
+				}
+				examen.agregaPregunta(new Selec_Mul_Pregunta(selmul.getJSONObject(i).getJSONObject("Seleccion Multiple " + (i + 1)).getString("Enunciado"), alternativas, selmul.getJSONObject(i).getJSONObject("Seleccion Multiple " + (i + 1)).getInt("IndexCorrecto"), selmul.getJSONObject(i).getJSONObject("Seleccion Multiple " + (i + 1)).getInt("peso")));
+			}
+			return examen;
 		}
-		
-		for (int i = 0; i < rc.length(); i++) {
-			examen.agregaPregunta(new Resp_Cortas_Pregunta(rc.getJSONObject(i).getJSONObject("Respuesta Corta " + (i + 1)).getString("Enunciado"), rc.getJSONObject(i).getJSONObject("Respuesta Corta " + (i + 1)).getString("Respuesta"), rc.getJSONObject(i).getJSONObject("Respuesta Corta " + (i + 1)).getInt("Peso")));
+		case 5: {
+			//System.out.println("entree al caso 5");
+			//System.out.println("tamaño de tf: "+tf.length());
+			//System.out.println("enunciado de prueba: "+tf.getJSONObject(0).getJSONObject("Verdadero o Falso " + 1).getString("Enunciado"));
+			for (int i = 0; i < tf.length(); i++) {
+				examen.agregaPregunta(new TFpreguntas(tf.getJSONObject(i).getJSONObject("Verdadero o Falso " + (i + 1)).getString("Enunciado"), tf.getJSONObject(i).getJSONObject("Verdadero o Falso " + (i + 1)).getBoolean("Respuesta"), tf.getJSONObject(i).getJSONObject("Verdadero o Falso " + (i + 1)).getInt("Peso")));
+			}
+			return examen;
 		}
-		return examen;
+		case 6: {
+			//System.out.println("entree al caso 6");
+			for (int i = 0; i < rc.length(); i++) {
+				examen.agregaPregunta(new Resp_Cortas_Pregunta(rc.getJSONObject(i).getJSONObject("Respuesta Corta " + (i + 1)).getString("Enunciado"), rc.getJSONObject(i).getJSONObject("Respuesta Corta " + (i + 1)).getString("Respuesta"), rc.getJSONObject(i).getJSONObject("Respuesta Corta " + (i + 1)).getInt("Peso")));
+			}
+			return examen;
+		}
+		default:
+			throw new IllegalArgumentException("Unexpected value: " + preg.getInt("formaExamen"));
+		}
 	}
 	public static void main(String[] args) throws FileNotFoundException {
 		//JSONObject jsoAlumno = new JSONObject("{\"puntajeUsuario\":[0,0,4],\"respuestaUsuario\":[\"sss\",\"Falso\",\"hola\"],\"respuestaExamen\":[\"ddd\",\"Verdadero\",\"hola\"],\"puntajeExamen\":[12,15,4]}");
 		//System.out.println(jsoAlumno.getJSONArray("puntajeUsuario").getInt(0));
 		JSONaExamen a = new JSONaExamen();
 		//a.generaResultadoExam(new File("C:\\Users\\Anton\\git\\Proyecto2POORodriguez\\PROYECTO DOS\\Profesor\\Notas\\Notas Gabriel Ortega\\Notas Examen examenDePruebaNUEVO\\antonio rodriguez.json"));
-		System.out.println(a.getEstadoExamen(new File("C:\\Users\\Anton\\git\\Proyecto2POORodriguez\\PROYECTO DOS\\Profesor\\Notas\\Notas Gabriel Ortega\\Notas Examen holamundo\\antonio rodriguez.json")));
+		//System.out.println(a.getEstadoExamen(new File("C:\\Users\\Anton\\git\\Proyecto2POORodriguez\\PROYECTO DOS\\Profesor\\Notas\\Notas Gabriel Ortega\\Notas Examen holamundo\\antonio rodriguez.json")));
 	}
 		
 	public ModeloNotasAlumno generaResultadoExam(File ubicacion) throws FileNotFoundException{
@@ -99,38 +142,39 @@ public class JSONaExamen {
 			base64Decoded = DatatypeConverter.parseBase64Binary(text);
 			String textoConvertido = new String(base64Decoded);
 			jsonAlumno = new JSONObject(textoConvertido);
+			//System.out.println(jsonAlumno.toString());
 		}
 		
 		JSONArray arr = jsonAlumno.getJSONArray("puntajeUsuario");
 		int[] puntajeA = new int[arr.length()];
 		for(int i = 0; i < arr.length(); i++) {
 			puntajeA[i] = arr.getInt(i);
-			System.out.println(puntajeA[i] );
+			//System.out.println(puntajeA[i] );
 		}
-		System.out.println();
+		//System.out.println();
 		
 		JSONArray arr2 = jsonAlumno.getJSONArray("puntajeExamen");
 		int[] puntajeE = new int[arr2.length()];
 		for (int i = 0; i < arr2.length(); i++) {
 			puntajeE[i] = arr2.getInt(i);
-			System.out.println(puntajeE[i]);
+			//System.out.println(puntajeE[i]);
 		}
 		System.out.println();
 		JSONArray arr3 = jsonAlumno.getJSONArray("respuestaUsuario");
 		String[] respuestaA = new String[arr3.length()];
 		for (int i = 0; i < arr3.length(); i++) {
 			respuestaA[i] = arr3.getString(i);
-			System.out.println(respuestaA[i]);
+			//System.out.println(respuestaA[i]);
 		}
-		System.out.println();
+		//System.out.println();
 		
 		JSONArray arr4 = jsonAlumno.getJSONArray("respuestaExamen");
 		String[] respuestaE = new String[arr4.length()];
 		for (int i = 0; i < arr4.length(); i++) {
 			respuestaE[i] = arr4.getString(i);
-			System.out.println(respuestaE[i]);
+			//System.out.println(respuestaE[i]);
 		}
-		System.out.println();
+		//System.out.println();
 		
 		alumno.setPuntajeAlumno(puntajeA);
 		alumno.setPuntajeExamen(puntajeE);
@@ -148,10 +192,7 @@ public class JSONaExamen {
 			String textoConvertido = new String(base64Decoded);
 			jsonAlumno = new JSONObject(textoConvertido);
 		}
-		
-		//System.out.println(jsonAlumno.getString("estadoExamen"));
 		return jsonAlumno.getString("estadoExamen");
-		//return null;
 	}
 	
 	

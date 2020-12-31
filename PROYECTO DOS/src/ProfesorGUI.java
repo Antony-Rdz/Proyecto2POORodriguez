@@ -27,6 +27,7 @@ import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -70,14 +71,14 @@ import Controlador.TFpreguntas;
 public class ProfesorGUI extends JFrame {
 
 	private JPanel PanelMayorProfesor;
-	static String nombreDelArchivo;
+	static String nombreDelArchivo = "";
 	String rut;
 	JTextField textRut;
 	int fila;
 	String ubicacionArchivos = "";
 	String nombreExamen = "";
 	JTable tablaDeExamenesNotas;
-	
+
 	public static void main(String[] args) {
 
 		try {
@@ -98,7 +99,6 @@ public class ProfesorGUI extends JFrame {
 		});
 	}
 
-	
 	public ProfesorGUI() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		PanelMayorProfesor = new JPanel();
@@ -116,11 +116,11 @@ public class ProfesorGUI extends JFrame {
 		panelContenedorInicioSesion.setBorder(new EmptyBorder(0, 0, 20, 0));
 		panelContenedorInicioSesion.setLayout(new BoxLayout(panelContenedorInicioSesion, BoxLayout.Y_AXIS));
 
-		JPanel panelMenuBar = new JPanel(new BorderLayout(0,10));
+		JPanel panelMenuBar = new JPanel(new BorderLayout(0, 10));
 		panelContenedorInicioSesion.add(panelMenuBar);
-		
+
 		panelContenedorInicioSesion.add(Box.createRigidArea(new Dimension(0, 20)));
-	
+
 		JPanel panelImagen = new JPanel(new BorderLayout());
 		panelImagen.setBorder(new EmptyBorder(0, 70, 0, 70));
 		panelContenedorInicioSesion.add(panelImagen);
@@ -160,7 +160,6 @@ public class ProfesorGUI extends JFrame {
 		panelLblReset.setLayout(new BorderLayout());
 		panelContenedorInicioSesion.add(panelLblReset);
 
-		
 		JMenuBar barraOpciones = new JMenuBar();
 		panelMenuBar.add(barraOpciones, BorderLayout.NORTH);
 		JMenu menuOpciones = new JMenu("Opciones");
@@ -180,12 +179,12 @@ public class ProfesorGUI extends JFrame {
 		});
 		menuOpciones.add(VolverOpcion);
 		menuOpciones.add(SalirOpcion);
-	
+
 		String titulo = "Inicio de Sesión<br>Profesor";
 		JLabel lblEncabezado = new JLabel("<html><div style='text-align: center;'>" + titulo + "</div></html>");
 		lblEncabezado.setHorizontalAlignment(SwingConstants.CENTER);
 		lblEncabezado.setFont(new Font("Thaoma", Font.PLAIN, 30));
-		panelMenuBar.add(lblEncabezado,BorderLayout.SOUTH);
+		panelMenuBar.add(lblEncabezado, BorderLayout.SOUTH);
 
 		JLabel lblImagenProfeInicSes = new JLabel();
 		lblImagenProfeInicSes.setHorizontalAlignment(SwingConstants.CENTER);
@@ -198,10 +197,10 @@ public class ProfesorGUI extends JFrame {
 		}
 
 		ImageIcon imagenAlumno = new ImageIcon(ubicacionImagen);
-		lblImagenProfeInicSes.setIcon(new ImageIcon(imagenAlumno.getImage().getScaledInstance(240, 220, Image.SCALE_DEFAULT)));
+		lblImagenProfeInicSes
+				.setIcon(new ImageIcon(imagenAlumno.getImage().getScaledInstance(240, 220, Image.SCALE_DEFAULT)));
 		panelImagen.add(lblImagenProfeInicSes, BorderLayout.CENTER);
-		
-		
+
 		JLabel lblRut = new JLabel("Rut");
 		lblRut.setFont(new Font("Thaoma", Font.PLAIN, 18));
 		panelLblRut.add(lblRut, BorderLayout.WEST);
@@ -212,7 +211,6 @@ public class ProfesorGUI extends JFrame {
 		textRut.addKeyListener(new noAgregaLetrasRUTField());
 		textRut.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		panelTextRut.add(textRut);
-		
 
 		JLabel lblContra = new JLabel("Contraseña");
 		lblContra.setHorizontalAlignment(SwingConstants.LEFT);
@@ -245,7 +243,6 @@ public class ProfesorGUI extends JFrame {
 		});
 		botonLogin.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		panelBotonLogin.add(botonLogin);
-		
 
 		JButton btnResetContra = new JButton("Recuperar Contraseña");
 		btnResetContra.addActionListener(new ActionListener() {
@@ -254,12 +251,12 @@ public class ProfesorGUI extends JFrame {
 				new Email("profesores");
 			}
 		});
-		
+
 		btnResetContra.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		btnResetContra.setBackground(new Color(23,32,48));
+		btnResetContra.setBackground(new Color(23, 32, 48));
 		btnResetContra.setBorderPainted(false);
-		panelLblReset.add(btnResetContra,BorderLayout.CENTER);
-		
+		panelLblReset.add(btnResetContra, BorderLayout.CENTER);
+
 		return panelContenedorInicioSesion;
 	}
 
@@ -267,11 +264,23 @@ public class ProfesorGUI extends JFrame {
 
 		JPanel panelContenedorMenu = new JPanel(new BorderLayout());
 		JPanel panelContenedorIzquierdo = new JPanel(new BorderLayout());
-		panelContenedorIzquierdo.setBorder(new EmptyBorder(0, 0, 0, 0));
+		panelContenedorIzquierdo.setBorder(new EmptyBorder(20, 20, 10, 10));
 		JPanel panelContenedorDerecho = new JPanel(new BorderLayout());
 
 		panelContenedorMenu.add(panelContenedorIzquierdo, BorderLayout.WEST);
 		panelContenedorMenu.add(panelContenedorDerecho, BorderLayout.CENTER);
+
+		JPanel panelBorde = new JPanel(new BorderLayout());
+		panelBorde.setBorder(BorderFactory.createLineBorder(new Color(33, 48, 71), 2, true));
+		panelContenedorIzquierdo.add(panelBorde, BorderLayout.CENTER);
+		JPanel panelImagen = new JPanel();
+		panelImagen.setBorder(new EmptyBorder(10, 10, 10, 10));
+		panelImagen.setLayout(new BoxLayout(panelImagen, BoxLayout.Y_AXIS));
+		panelBorde.add(panelImagen, BorderLayout.CENTER);
+
+		JPanel panelInternoCentrarImagen = new JPanel(new BorderLayout());
+		panelImagen.add(Box.createRigidArea(new Dimension(0, 160)));
+		panelImagen.add(panelInternoCentrarImagen);
 
 		JMenuBar barraOpciones = new JMenuBar();
 		panelContenedorMenu.add(barraOpciones, BorderLayout.NORTH);
@@ -280,7 +289,7 @@ public class ProfesorGUI extends JFrame {
 		barraOpciones.add(menuOpciones);
 		JMenu menuCreacion = new JMenu("Creación");
 		menuCreacion.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		barraOpciones.add(menuCreacion);		
+		barraOpciones.add(menuCreacion);
 		JMenuItem VolverOpcion = new JMenuItem("Volver");
 		VolverOpcion.addActionListener(new ActionListener() {
 			@Override
@@ -314,19 +323,28 @@ public class ProfesorGUI extends JFrame {
 			}
 		});
 		menuCreacion.add(CrearExamOpcion);
-		
+
 		JLabel lblImagenProfesor = new JLabel();
 		String ubicacionImagen = "";
 		try {
-			
+
 			ubicacionImagen = new File(".").getCanonicalPath() + "\\res\\profesor.png";
 		} catch (Exception e) {
 			System.out.println(e.toString());
 		}
 
 		ImageIcon imagenAdmin = new ImageIcon(ubicacionImagen);
-		lblImagenProfesor.setIcon(new ImageIcon(imagenAdmin.getImage().getScaledInstance(210, 200, Image.SCALE_DEFAULT)));
-		panelContenedorIzquierdo.add(lblImagenProfesor, BorderLayout.CENTER);
+		lblImagenProfesor
+				.setIcon(new ImageIcon(imagenAdmin.getImage().getScaledInstance(210, 200, Image.SCALE_DEFAULT)));
+		panelInternoCentrarImagen.add(lblImagenProfesor, BorderLayout.CENTER);
+
+		JLabel labelInfo = new JLabel();
+		labelInfo.setText("<html><font color=\"white\">Profesor: </font>"+ getProfesorName() +"</html>");
+		labelInfo.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		labelInfo.setForeground(new Color(233,216,26));
+		labelInfo.setHorizontalAlignment(SwingConstants.CENTER);
+		panelInternoCentrarImagen.add(labelInfo, BorderLayout.SOUTH);
+		panelImagen.add(Box.createRigidArea(new Dimension(0, 180)));
 
 		JTabbedPane panelControladorProfesor = new JTabbedPane();
 		panelContenedorDerecho.add(panelControladorProfesor, BorderLayout.CENTER);
@@ -342,15 +360,13 @@ public class ProfesorGUI extends JFrame {
 		JPanel panelArbolCarpetasCreaExamen = new JPanel(new BorderLayout(0, 10));
 		panelArbolCarpetasCreaExamen.setBorder(new EmptyBorder(10, 10, 10, 0));
 
-		
-		
 		try {
-			ubicacionArchivos = new File(".").getCanonicalPath() + "\\Profesor\\Examenes\\Examenes " + getProfesorName();
+			ubicacionArchivos = new File(".").getCanonicalPath() + "\\Profesor\\Examenes\\Examenes "+ getProfesorName();
 			if (!new File(ubicacionArchivos).exists()) {
 				new File(ubicacionArchivos).mkdirs();
 			}
-			
-			if(!new File(new File(".").getCanonicalPath() + "\\Profesor\\Notas\\Notas " + getProfesorName()).exists()) {
+
+			if (!new File(new File(".").getCanonicalPath() + "\\Profesor\\Notas\\Notas " + getProfesorName()).exists()) {
 				new File(new File(".").getCanonicalPath() + "\\Profesor\\Notas\\Notas " + getProfesorName()).mkdirs();
 			}
 
@@ -361,7 +377,7 @@ public class ProfesorGUI extends JFrame {
 		JTree arbolCarpetas = new JTree();
 		Controlador.FileSystemModel modelo = new FileSystemModel(new File(ubicacionArchivos));
 		arbolCarpetas.setModel(modelo);
-		
+
 		JScrollPane scrollArbol = new JScrollPane(arbolCarpetas);
 		panelCreacionExamen.add(scrollArbol, BorderLayout.CENTER);
 
@@ -371,7 +387,7 @@ public class ProfesorGUI extends JFrame {
 		tablaDeExamenesNotas.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
-					System.out.println("entre");
+					//System.out.println("entre");
 					fila = tablaDeExamenesNotas.getSelectedRow();
 					PanelMayorProfesor.removeAll();
 					PanelMayorProfesor.add(tablaResultadosDeExamen());
@@ -391,25 +407,41 @@ public class ProfesorGUI extends JFrame {
 
 		return panelContenedorMenu;
 	}
-	
-	
+
 	DefaultTableModel encabezado() {
-		String[] rubrosTablaProf = { "Nombre", "P1","P2","P3","P4","P5","Nota" };
+		String[] rubrosTablaProf = { "Nombre", "P1", "P2", "P3", "P4", "P5", "Nota" };
 		DefaultTableModel tablaPorDefecto = new DefaultTableModel(rubrosTablaProf, 0);
 		return tablaPorDefecto;
 	}
-	
-	public JPanel tablaResultadosDeExamen(){
+
+	public JPanel tablaResultadosDeExamen() {
 		JTable tablaNotas = new JTable();
-		JPanel panelMaestroTabla = new JPanel(new BorderLayout(0,10));
+		tablaNotas.setPreferredSize(new Dimension(20, 100));
+		tablaNotas.setModel(encabezado());
+		tablaNotas.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2) {
+					System.out.println("Datos ");
+					
+					try {
+						//System.out.println("el name es: "+String.valueOf(tablaNotas.getValueAt(0, 1)));
+						//System.out.println("la fila es: "+ fila);
+						new muestraDatosAlumno(tablaNotas,tablaNotas.getSelectedRow(),new File(".").getCanonicalPath() + "\\Profesor\\Notas\\Notas " + getProfesorName()+ "\\Notas Examen " + nombreExamen);
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+				}
+			}
+		});
+		JPanel panelMaestroTabla = new JPanel(new BorderLayout(0, 10));
 		JPanel panelMenu = new JPanel(new BorderLayout());
-		panelMaestroTabla.add(panelMenu,BorderLayout.NORTH);
-		JPanel panelTabla = new JPanel(new BorderLayout(0,10));
+		panelMaestroTabla.add(panelMenu, BorderLayout.NORTH);
+		JPanel panelTabla = new JPanel(new BorderLayout(0, 10));
 		panelTabla.setBorder(new EmptyBorder(0, 20, 20, 20));
-		panelMaestroTabla.add(panelTabla,BorderLayout.CENTER);
-		
+		panelMaestroTabla.add(panelTabla, BorderLayout.CENTER);
+
 		JMenuBar menuOpciones = new JMenuBar();
-		panelMenu.add(menuOpciones,BorderLayout.CENTER);
+		panelMenu.add(menuOpciones, BorderLayout.CENTER);
 		JMenu opciones = new JMenu("Opciones");
 		opciones.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		menuOpciones.add(opciones);
@@ -418,7 +450,7 @@ public class ProfesorGUI extends JFrame {
 		menuOpciones.add(graficar);
 		JMenuItem opcionVolver = new JMenuItem("Volver");
 		opcionVolver.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		opcionVolver.addActionListener(new ActionListener() {			
+		opcionVolver.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				System.out.println("entre acaa");
@@ -435,101 +467,91 @@ public class ProfesorGUI extends JFrame {
 		opcionGraficar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				if(tablaNotas!= null) {
-					System.out.println("tabla col: "+ tablaNotas.getColumnCount()+" filas: "+tablaNotas.getRowCount());
-					
-					panelMaestroTabla.add(graficarResultados(tablaNotas),BorderLayout.EAST);
-					panelMaestroTabla.updateUI();
-					pack();
-					setLocationRelativeTo(null);
+				if (tablaNotas != null) {
+					if (tablaNotas.getRowCount() > 0) {
+
+						//System.out.println("tabla col: " + tablaNotas.getColumnCount() + " filas: " + tablaNotas.getRowCount());
+						panelMaestroTabla.add(graficarResultados(tablaNotas), BorderLayout.EAST);
+						panelMaestroTabla.updateUI();
+						pack();
+						setLocationRelativeTo(null);
+					} else {
+						JOptionPane.showMessageDialog(null, "No hay nada que graficar");
+					}
+
 				}
 			}
 		});
 		graficar.add(opcionGraficar);
+
 		
-		
-		
-		tablaNotas.setPreferredSize(new Dimension(20,100));
-		tablaNotas.setModel(encabezado());
-		tablaNotas.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-				if (e.getClickCount() == 2) {
-					System.out.println("Datos ");
-					muestraDatosAlumno();
-				}
-			}
-		});
-		
+
 		JSONaExamen conversor = new JSONaExamen();
 		File archivos = new File(ubicacionArchivos);
 		String[] archivoElegido = archivos.list();
-		
+
 		Exam examen = new Exam();
 		try {
-			examen = conversor.generaExamen(new File(ubicacionArchivos+"\\"+archivoElegido[fila]));
+			examen = conversor.generaExamen(new File(ubicacionArchivos + "\\" + archivoElegido[fila]));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-	
-		for(int i = 0; i< archivoElegido[fila].length();i++ ) {
-			if(archivoElegido[fila].charAt(i) != '.') {
-				nombreExamen += archivoElegido[fila].charAt(i);
-			}else {
-				break;
-			}
-		}
-		String ubicacion = "";
+
+		nombreExamen = archivoElegido[fila].substring(0, archivoElegido[fila].lastIndexOf("."));
 		
+		String ubicacion = "";
+		//System.out.println("el nombre del examen es "+nombreExamen);
 		try {
-			ubicacion = new File(".").getCanonicalPath() + "\\Profesor\\Notas\\Notas " + getProfesorName() +"\\Notas Examen "+ nombreExamen;
+			ubicacion = new File(".").getCanonicalPath() + "\\Profesor\\Notas\\Notas " + getProfesorName()+ "\\Notas Examen " + nombreExamen;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		llenaTablaDeAlumnos(tablaNotas,ubicacion,examen);
+		
+		llenaTablaDeAlumnos(tablaNotas, ubicacion, examen);
 		tablaNotas.getTableHeader().setReorderingAllowed(false);
 		tablaNotas.getTableHeader().setResizingAllowed(false);
 		JScrollPane scrolltabla = new JScrollPane(tablaNotas);
 		panelTabla.add(scrolltabla, BorderLayout.CENTER);
-		
-		JLabel labelInformacion = new JLabel("Notas del Examen: "+nombreExamen);
-		System.out.println("Name exam: "+nombreExamen);
-		nombreExamen = "";
-		
+
+		JLabel labelInformacion = new JLabel();
+		labelInformacion.setText("<html><font color=\"white\">Notas del Examen: </font>"+ nombreExamen +"</html>");
 		labelInformacion.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		labelInformacion.setForeground(new Color(233,26,158));
+		//nombreExamen = "";
 		labelInformacion.setHorizontalAlignment(SwingConstants.LEFT);
-		panelTabla.add(labelInformacion,BorderLayout.NORTH);
-	
+		panelTabla.add(labelInformacion, BorderLayout.NORTH);
+
 		return panelMaestroTabla;
 	}
-	
-	public JPanel graficarResultados(JTable tabla){
+
+	public JPanel graficarResultados(JTable tabla) {
 		JPanel panelGrafica = new JPanel(new BorderLayout());
 		int filas = tabla.getRowCount();
 		int columnaDeLaNota = tabla.getColumnCount();
 		DefaultCategoryDataset data = new DefaultCategoryDataset();
-		
-		System.out.println("es: "+tabla.getValueAt(0, columnaDeLaNota-1));
-		for(int i = 0; i < filas; i++) {
-			String[] arr = String.valueOf(tabla.getValueAt(i, columnaDeLaNota-1)).split("/");
-			
+
+		System.out.println("es: " + tabla.getValueAt(0, columnaDeLaNota - 1));
+		for (int i = 0; i < filas; i++) {
+			String[] arr = String.valueOf(tabla.getValueAt(i, columnaDeLaNota - 1)).split("/");
+
 			int porcentaje = (int) ((double) Integer.valueOf(arr[0]) / (Integer.valueOf(arr[1])) * 100);
-			System.out.println("porcentaje "+ Integer.valueOf(arr[0])+" otra: "+Integer.valueOf(arr[1])+" porc: "+porcentaje);
+			//System.out.println("porcentaje " + Integer.valueOf(arr[0]) + " otra: " + Integer.valueOf(arr[1]) + " porc: "+ porcentaje);
 			data.addValue(porcentaje, "Estudiante", String.valueOf(tabla.getValueAt(i, 0)));
 		}
-		
-		JFreeChart grafica = ChartFactory.createBarChart3D("Grafico de notas", "Alumnos", "% de nota", data, PlotOrientation.VERTICAL, false, true , false);
+
+		JFreeChart grafica = ChartFactory.createBarChart3D("Grafico de notas", "Alumnos", "% de nota", data,
+				PlotOrientation.VERTICAL, false, true, false);
 		ChartPanel contenedor = new ChartPanel(grafica);
-		
-		panelGrafica.add(contenedor,BorderLayout.CENTER);
-		
-		
+
+		panelGrafica.add(contenedor, BorderLayout.CENTER);
+
 		return panelGrafica;
 	}
-	
-	private void llenaTablaDeAlumnos(JTable tabla, String ubicacion,Exam examen) {
+
+	private void llenaTablaDeAlumnos(JTable tabla, String ubicacion, Exam examen) {
 		JSONaExamen revision = new JSONaExamen();
 		ModeloNotasAlumno alumno = new ModeloNotasAlumno();
-		
+
 		DefaultTableModel modelo = new DefaultTableModel() {
 			public boolean isCellEditable(int row, int column) {
 				return false;
@@ -537,8 +559,7 @@ public class ProfesorGUI extends JFrame {
 		};
 		modelo.addColumn("Nombre");
 		for (int i = 0; i < examen.getTotalPreguntas(); i++) {
-			modelo.addColumn("P"+(i+1));
-			
+			modelo.addColumn("Preg" + (i + 1));
 		}
 		modelo.addColumn("Puntaje");
 
@@ -546,43 +567,134 @@ public class ProfesorGUI extends JFrame {
 		System.out.println(ubicacion);
 		File archivos = new File(ubicacion);
 		String[] totalArchivos = archivos.list();
-		if(totalArchivos != null) {
-			System.out.println(totalArchivos.length);
-			Object[] fila = new Object[examen.getTotalPreguntas()+2];
+		if (totalArchivos != null) {
+			//System.out.println("total archivos: " + totalArchivos.length);
+			//System.out.println("total preguntas examen: " + examen.getTotalPreguntas());
+			Object[] fila = new Object[examen.getTotalPreguntas() + 2];
+			//System.out.println("total de preguntas: " + Arrays.toString(fila));
 			for (int i = 0; i < totalArchivos.length; i++) {
 				fila[0] = ubicacionArchivos.getNombreArchivos(archivos, i).substring(0,ubicacionArchivos.getNombreArchivos(archivos, i).lastIndexOf("."));
-					try {
-						alumno = revision.generaResultadoExam(new File(ubicacion+"\\"+ubicacionArchivos.getNombreArchivos(archivos, i)));
-						int[] arr = alumno.getPuntajeAlumno();
-						for (int j = 1; j <= examen.getTotalPreguntas()+1; j++) {
-							if(j == examen.getTotalPreguntas()+1) {
-								fila[j] = Integer.toString(alumno.getPuntajeTotalAlumno())+"/"+Integer.toString(alumno.getPuntajeTotalExam());
-								break;
-							}
-							fila[j] = Integer.toString(arr[j-1]);
-							
-						}						
+				try {
+					alumno = revision.generaResultadoExam(new File(ubicacion + "\\" + ubicacionArchivos.getNombreArchivos(archivos, i)));
+					int[] arr = alumno.getPuntajeAlumno();
+					//System.out.println("total de pregs respondidas por el alumno: " + arr.length);
+					//System.out.println("total de preguntas respondidas por el ususario: " + Arrays.toString(arr));
+					for (int j = 1; j <= examen.getTotalPreguntas() + 1; j++) {
+						if (j == examen.getTotalPreguntas() + 1) {
+							fila[j] = Integer.toString(alumno.getPuntajeTotalAlumno()) + "/"
+									+ Integer.toString(alumno.getPuntajeTotalExam());
+							break;
+						}
+						fila[j] = Integer.toString(arr[j - 1]);
 
-					} catch (FileNotFoundException e) {
-						e.printStackTrace();
 					}
+
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
 				modelo.addRow(fila);
 			}
 			tabla.setModel(modelo);
-			
+
 			tabla.getColumnModel().getColumn(0).setPreferredWidth(300);
 			for (int i = 1; i <= examen.getTotalPreguntas(); i++) {
 				tabla.getColumnModel().getColumn(i).setPreferredWidth(100);
 			}
-			tabla.getColumnModel().getColumn(examen.getTotalPreguntas()+1).setPreferredWidth(100);
-			
+			tabla.getColumnModel().getColumn(examen.getTotalPreguntas() + 1).setPreferredWidth(100);
+
 		}
 	}
+
+	public class muestraDatosAlumno extends JFrame {
+		
+		JSONaExamen revision = new JSONaExamen();
+		ModeloNotasAlumno alumno = new ModeloNotasAlumno();
+		DefaultTableModel modelo = new DefaultTableModel() {
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+		};
+		JPanel panelData;
+		
+		public muestraDatosAlumno(JTable tabla,int fila,String ubicacion) {
+			setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			Controlador.FileSystemModel ubicacionArchivos = new FileSystemModel(new File(ubicacion));
+			panelData = new JPanel(new BorderLayout());
+			setContentPane(panelData);
+			panelData.add(tabla(tabla,fila,ubicacionArchivos,ubicacion));
+			pack();
+			setResizable(false);
+			setLocationRelativeTo(null);
+			setVisible(true);
+			
+		}
+		
+		JPanel tabla(JTable tabla,int fila, FileSystemModel ubicacionArchivos,String ubicacion) {
+			
+			//System.out.println("EL NAME ES "+nombreExamen);
+			JPanel tablaAlumno = new JPanel(new BorderLayout(0,10));
+			tablaAlumno.setBorder(new EmptyBorder(20,20,20,20));
+			JPanel panelNombreAlumno = new JPanel(new BorderLayout());
+			tablaAlumno.add(panelNombreAlumno,BorderLayout.NORTH);
+			JPanel panelTabla = new JPanel(new BorderLayout());
+			tablaAlumno.add(panelTabla,BorderLayout.CENTER);
+			
+			JLabel nombreAlumno = new JLabel();
+			//System.out.println("EL USUARIO ES "+String.valueOf(tabla.getValueAt(fila, 0))+"\ny la fila es "+fila);
+			nombreAlumno.setText("<html><font color=\"white\">Alumno: </font>"+ String.valueOf(tabla.getValueAt(fila, 0)) +"</html>");
+			nombreAlumno.setFont(new Font("Tahoma", Font.PLAIN, 16));
+			nombreAlumno.setHorizontalAlignment(SwingConstants.LEFT);
+			nombreAlumno.setForeground(new Color(62,208,162));
+			panelNombreAlumno.add(nombreAlumno,BorderLayout.WEST);
+			
+			
+			
+			File archivos = new File(ubicacion);
+			try {
+				alumno = revision.generaResultadoExam(new File(ubicacion + "\\" + ubicacionArchivos.getNombreArchivos(archivos, fila)));
+				Object[] datos = new Object[alumno.getRespuestaAlumno().length+1];
+				modelo.addColumn("---");
+				for (int i = 0; i < datos.length-1; i++) {
+					modelo.addColumn("Preg" + (i+1));
+				}
+				
+				String[] rubro = {"Rta Correcta","Rta usuario"};
+				for (int i = 0; i < 2; i++) {
+					if(i == 0) {
+						datos[0] = rubro[i];
+					}else {
+						datos[0] = rubro[i];
+					}
+					for (int j = 1; j <= alumno.getRespuestaAlumno().length; j++) {
+						if(i == 0) {
+							datos[j] = alumno.getRespuestaExamen()[j-1];
+						}else {
+							datos[j] = alumno.getRespuestaAlumno()[j-1];
+						}	
+					}
+					modelo.addRow(datos);
+				}
+				
+				JTable tablaDeElecciones = new JTable();
+				tablaDeElecciones.setModel(modelo);
+				for (int i = 1; i < datos.length; i++) {
+					tablaDeElecciones.getColumnModel().getColumn(i).setPreferredWidth(100);
+				}
+				JScrollPane scroll = new JScrollPane(tablaDeElecciones);
+				scroll.setPreferredSize(new Dimension(500,80));
+				panelTabla.add(scroll,BorderLayout.CENTER);
+				
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	
+			return tablaAlumno;
+		}
+		
 	
-	public void muestraDatosAlumno() {
 		
 	}
-	
+
 	private void llenaTablaDeExamenes(JTable tabla, String ubicacion) {
 		DefaultTableModel modelo = new DefaultTableModel() {
 			public boolean isCellEditable(int row, int column) {
@@ -597,15 +709,15 @@ public class ProfesorGUI extends JFrame {
 		String[] totalArchivos = archivos.list();
 		Object[] fila = new Object[2];
 		for (int i = 0; i < totalArchivos.length; i++) {
-			fila[0] = ubicacionArchivos.getNombreArchivos(archivos, i).substring(0,ubicacionArchivos.getNombreArchivos(archivos, i).lastIndexOf("."));
-			fila[1] = fecha.retornaFecha(ubicacion+"\\"+ubicacionArchivos.getNombreArchivos(archivos, i));
+			fila[0] = ubicacionArchivos.getNombreArchivos(archivos, i).substring(0,
+					ubicacionArchivos.getNombreArchivos(archivos, i).lastIndexOf("."));
+			fila[1] = fecha.retornaFecha(ubicacion + "\\" + ubicacionArchivos.getNombreArchivos(archivos, i));
 			modelo.addRow(fila);
 		}
 		tabla.setModel(modelo);
 
 	}
-	
-	
+
 	JPanel AgregaExamen() {
 
 		JPanel panelContenedorAgregaExamen = new JPanel();
@@ -639,7 +751,8 @@ public class ProfesorGUI extends JFrame {
 
 		String[] options = new String[] { "Cancelar", "Aceptar" };
 
-		int option = JOptionPane.showOptionDialog(null, panel, "Nombre del Exámen", JOptionPane.NO_OPTION,JOptionPane.PLAIN_MESSAGE, null, options, options[1]);
+		int option = JOptionPane.showOptionDialog(null, panel, "Nombre del Exámen", JOptionPane.NO_OPTION,
+				JOptionPane.PLAIN_MESSAGE, null, options, options[1]);
 
 		if (ingresaNombreArchivo.getText().isBlank() && option == 1) {
 			JOptionPane.showMessageDialog(null, "Nombre no puede estar vacio");
@@ -657,17 +770,17 @@ public class ProfesorGUI extends JFrame {
 	}
 
 	public String retornaClaveProfesor() {
-		String clave = "";//new String();
+		String clave = "";
 
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
 		try {
-
 			Conexion objCon = new Conexion();
 			Connection conn = objCon.getConnection();
 			rut = textRut.getText();
-			ps = conn.prepareStatement("SELECT Contraseña, CAST(AES_DECRYPT(Contraseña,'profesores')AS CHAR(50)) FROM profesores WHERE Rut = ?");
+			ps = conn.prepareStatement(
+					"SELECT Contraseña, CAST(AES_DECRYPT(Contraseña,'profesores')AS CHAR(50)) FROM profesores WHERE Rut = ?");
 			ps.setString(1, rut);
 			rs = ps.executeQuery();
 
@@ -689,9 +802,9 @@ public class ProfesorGUI extends JFrame {
 		try {
 			Conexion objCon = new Conexion();
 			Connection conn = objCon.getConnection();
-			if(textRut != null) {
+			if (textRut != null) {
 				rut = textRut.getText();
-			}			
+			}
 			ps = conn.prepareStatement("SELECT Nombre,Apellido FROM profesores WHERE Rut = ?");
 			ps.setString(1, rut);
 			rs = ps.executeQuery();
@@ -724,10 +837,15 @@ public class ProfesorGUI extends JFrame {
 					|| (letraIngresada == KeyEvent.VK_BACK_SPACE) || (letraIngresada == KeyEvent.VK_DELETE)) {
 				arg0.consume();
 			}
+
+			if (textRut.getText().length() > 9) {
+				arg0.consume();
+			}
+
 		}
 
 	}
-	
+
 	class CrearExamen extends JPanel {
 
 		JPanel panelEnunciado;
@@ -762,15 +880,44 @@ public class ProfesorGUI extends JFrame {
 		boolean respuestaVerdFalso;
 		JPanel panelCreador;
 		String respuestaRespCorta;
+		int formaExamen;
+		int contadorPreguntaSelecMul = 0;
+		int contadorPreguntaVerdFals = 0;
+		int contadorPreguntaRespCort = 0;
+		JComboBox<String> formasExamen;
 		/////////////////////////////////
 
 		public CrearExamen() {
+
 			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			panelMayorCrearExamen = new JPanel();
-			//panelMayorCrearExamen.setBorder(new EmptyBorder(5, 5, 5, 5));
-			panelMayorCrearExamen.setLayout(new BorderLayout(10, 10));
+			panelMayorCrearExamen.setLayout(new BorderLayout(10, 0));
 			setContentPane(panelMayorCrearExamen);
-			panelMayorCrearExamen.add(panelIniciador());
+			JMenuBar menu = new JMenuBar();
+			panelMayorCrearExamen.add(menu, BorderLayout.NORTH);
+			JMenu opciones = new JMenu("Opciones");
+			opciones.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			menu.add(opciones);
+			JMenuItem volver = new JMenuItem("Volver");
+			volver.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			volver.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					int i = JOptionPane.showConfirmDialog(null,
+							"<html>Se perderan todos los progresos<br>¿Esta seguro de volver?</html>", "Alerta",
+							JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+					if (i == 0) {
+						panelMayorCrearExamen.removeAll();
+						panelMayorCrearExamen.add(MenuProfesor());
+						panelMayorCrearExamen.updateUI();
+						pack();
+						setLocationRelativeTo(null);
+					}
+				}
+			});
+			opciones.add(volver);
+
+			panelMayorCrearExamen.add(panelIniciador(), BorderLayout.CENTER);
 			setResizable(false);
 			pack();
 			setLocationRelativeTo(null);
@@ -780,6 +927,9 @@ public class ProfesorGUI extends JFrame {
 		private JPanel panelIniciador() {
 			jsonArchivo = new ConvierteExamenJson();
 			examenCreado = new Exam();
+			JButton botonCrearSelecMul = new JButton();
+			JButton botonVerdaderoFalso = new JButton();
+			JButton botonRespuestCorta = new JButton();
 
 			JPanel panelContenedorCreaExamen = new JPanel(new BorderLayout());
 			panelContenedorCreaExamen.setBorder(new EmptyBorder(0, 20, 20, 20));
@@ -788,7 +938,7 @@ public class ProfesorGUI extends JFrame {
 			panelTitulo.setBorder(new EmptyBorder(20, 5, 20, 5));
 			panelCreador = new JPanel();
 
-			JPanel panelSuperiorCreador = new JPanel(new BorderLayout());
+			JPanel panelSuperiorCreador = new JPanel(new BorderLayout(200, 0));
 			JPanel panelTiempo = new JPanel(new BorderLayout(5, 0));
 			panelTiempo.setBorder(new EmptyBorder(0, 0, 0, 0));
 			panelSuperiorCreador.add(panelTiempo, BorderLayout.WEST);
@@ -797,10 +947,15 @@ public class ProfesorGUI extends JFrame {
 			JPanel panelContadorTotalPreguntas = new JPanel(new BorderLayout());
 			panelSuperiorCreador.add(panelContadorTotalPreguntas, BorderLayout.EAST);
 			labelContadorTotalPreguntas = new JLabel("Total preguntas: " + totalPreguntas);
+			labelContadorTotalPreguntas.setText("<html><font color=\"white\">Total preguntas: </font>"+ totalPreguntas +"</html>");
 			labelContadorTotalPreguntas.setFont(new Font("Tahoma", Font.PLAIN, 18));
+			labelContadorTotalPreguntas.setForeground(new Color(214,194,21));
 			panelContadorTotalPreguntas.add(labelContadorTotalPreguntas, BorderLayout.CENTER);
 
-			JPanel panelBotonesCrearPreguntas = new JPanel(new BorderLayout());// new GridLayout(0,3,12,12));
+			JPanel panelFormaExam = new JPanel(new BorderLayout());
+			panelSuperiorCreador.add(panelFormaExam, BorderLayout.CENTER);
+
+			JPanel panelBotonesCrearPreguntas = new JPanel(new BorderLayout());
 			panelBotonesCrearPreguntas.setBorder(new EmptyBorder(0, 50, 0, 50));
 			panelBotonesCrearPreguntas.setBorder(BorderFactory.createLineBorder(new Color(33, 48, 71), 2, true));
 
@@ -815,6 +970,67 @@ public class ProfesorGUI extends JFrame {
 			panelContenedorCreaExamen.add(panelTitulo, BorderLayout.NORTH);
 			panelContenedorCreaExamen.add(panelCreador, BorderLayout.CENTER);
 			panelContenedorCreaExamen.add(panelBotonesCrearPreguntas, BorderLayout.SOUTH);
+
+			JLabel labelForma = new JLabel("Forma del Examen: ");
+			labelForma.setFont(new Font("Tahoma", Font.PLAIN, 18));
+			labelForma.setHorizontalAlignment(SwingConstants.RIGHT);
+			panelFormaExam.add(labelForma, BorderLayout.WEST);
+
+			formasExamen = new JComboBox<>();
+			formasExamen.setFont(new Font("Tahoma", Font.PLAIN, 18));
+			formasExamen.addItem("Seleccione");
+			formasExamen.addItem("SM-VF-RC");
+			formasExamen.addItem("VF-SM-RC");
+			formasExamen.addItem("RC-VF-SM");
+			formasExamen.addItem("Sele.Mult.");
+			formasExamen.addItem("Verd.Fals.");
+			formasExamen.addItem("Resp.Cort.");
+			formasExamen.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					if (formasExamen.getSelectedIndex() == 0) {
+						botonCrearSelecMul.setEnabled(false);
+						botonVerdaderoFalso.setEnabled(false);
+						botonRespuestCorta.setEnabled(false);
+						panelCreador.removeAll();
+						pack();
+						setLocationRelativeTo(null);
+					} else if (formasExamen.getSelectedIndex() == 1 || formasExamen.getSelectedIndex() == 2
+							|| formasExamen.getSelectedIndex() == 3) {
+						if (botonCrearSelecMul != null && botonVerdaderoFalso != null && botonRespuestCorta != null) {
+							botonCrearSelecMul.setEnabled(true);
+							botonVerdaderoFalso.setEnabled(true);
+							botonRespuestCorta.setEnabled(true);
+						}
+					} else if (formasExamen.getSelectedIndex() == 4) {
+						if (botonCrearSelecMul != null) {
+							botonCrearSelecMul.setEnabled(true);
+							botonVerdaderoFalso.setEnabled(false);
+							botonRespuestCorta.setEnabled(false);
+							panelBotonesCrearPreguntas.setBorder(null);
+							agregaOtraPregunta(panelCreador, panelCreadorSeleccionMultiple());
+						}
+					} else if (formasExamen.getSelectedIndex() == 5) {
+						if (botonVerdaderoFalso != null) {
+							botonCrearSelecMul.setEnabled(false);
+							botonVerdaderoFalso.setEnabled(true);
+							botonRespuestCorta.setEnabled(false);
+							panelBotonesCrearPreguntas.setBorder(null);
+							agregaOtraPregunta(panelCreador, panelCreadorVerdaderoFalso());
+						}
+					} else if (formasExamen.getSelectedIndex() == 6) {
+						if (botonRespuestCorta != null) {
+							botonCrearSelecMul.setEnabled(false);
+							botonVerdaderoFalso.setEnabled(false);
+							botonRespuestCorta.setEnabled(true);
+							panelBotonesCrearPreguntas.setBorder(null);
+							agregaOtraPregunta(panelCreador, panelCreadorRespuestaCorta());
+						}
+					}
+				}
+			});
+
+			panelFormaExam.add(formasExamen, BorderLayout.CENTER);
 
 			activarTiempo = new JRadioButton();
 			activarTiempo.addActionListener(new botonActivarTiempo());
@@ -831,8 +1047,10 @@ public class ProfesorGUI extends JFrame {
 			textTiempo.addKeyListener(new noAgregaLetrasField());
 			panelTiempo.add(textTiempo, BorderLayout.EAST);
 
-			JLabel label = new JLabel("Creador de Examenes :");
+			JLabel label = new JLabel("Creador de Examenes: " + nombreDelArchivo);
+			label.setText("<html><font color=\"white\">Creador de Examenes: </font>"+ nombreDelArchivo +"</html>");
 			label.setFont(new Font("Tahoma", Font.PLAIN, 20));
+			label.setForeground(new Color(22,215,17));
 			panelTitulo.add(label, BorderLayout.WEST);
 
 			botonFinalizar = new JButton("Finalizar");
@@ -846,7 +1064,7 @@ public class ProfesorGUI extends JFrame {
 			labelBotones.setFont(new Font("Tahoma", Font.PLAIN, 20));
 			panelLabelBotones.add(labelBotones, BorderLayout.CENTER);
 
-			JButton botonCrearSelecMul = new JButton("Seleccion Multiple");
+			botonCrearSelecMul.setText("Seleccion Multiple");
 			botonCrearSelecMul.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					panelBotonesCrearPreguntas.setBorder(null);
@@ -861,9 +1079,10 @@ public class ProfesorGUI extends JFrame {
 				}
 			});
 			botonCrearSelecMul.setFont(new Font("Tahoma", Font.PLAIN, 16));
+			botonCrearSelecMul.setEnabled(false);
 			panelBotonesCreador.add(botonCrearSelecMul);
 
-			JButton botonVerdaderoFalso = new JButton("Verdadero o Falso");
+			botonVerdaderoFalso.setText("Verdadero o Falso");
 			botonVerdaderoFalso.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					panelBotonesCrearPreguntas.setBorder(null);
@@ -876,9 +1095,10 @@ public class ProfesorGUI extends JFrame {
 				}
 			});
 			botonVerdaderoFalso.setFont(new Font("Tahoma", Font.PLAIN, 16));
+			botonVerdaderoFalso.setEnabled(false);
 			panelBotonesCreador.add(botonVerdaderoFalso);
 
-			JButton botonRespuestCorta = new JButton("Respuesta Corta");
+			botonRespuestCorta.setText("Respuesta Corta");
 			botonRespuestCorta.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					panelBotonesCrearPreguntas.setBorder(null);
@@ -890,6 +1110,7 @@ public class ProfesorGUI extends JFrame {
 				}
 			});
 			botonRespuestCorta.setFont(new Font("Tahoma", Font.PLAIN, 16));
+			botonRespuestCorta.setEnabled(false);
 			panelBotonesCreador.add(botonRespuestCorta);
 
 			return panelContenedorCreaExamen;
@@ -968,16 +1189,28 @@ public class ProfesorGUI extends JFrame {
 			agregaAlternativa(grupoCorrecto);
 			agregaAlternativa(grupoCorrecto);
 			agregaAlternativa(grupoCorrecto);
-			JButton botonAgregaMasAlternativas = new JButton("Agregar Alternativa");
+			JButton botonAgregaMasAlternativas = new JButton("Agregar Alternativa");// estoy aca arreglando
 			botonAgregaMasAlternativas.addActionListener(new btnAgregaMasAlternativas());
 
 			JButton botonGuardar = new JButton("Guardar Pregunta");
 			botonGuardar.addActionListener(new botonGuardarSelMulListener());
 
-			JPanel panelBotonesSelecMul = new JPanel(new BorderLayout());
+			JButton botonLimpia = new JButton("Limpiar casillas");
+			botonLimpia.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					letra = 65;
+					panelCreador.removeAll();
+					panelCreador.add(panelCreadorSeleccionMultiple());
+					panelCreador.updateUI();
+				}
+			});
+
+			JPanel panelBotonesSelecMul = new JPanel(new BorderLayout(250, 0));
 			panelRespuestas.add(panelBotonesSelecMul, BorderLayout.SOUTH);
 
 			panelBotonesSelecMul.add(botonAgregaMasAlternativas, BorderLayout.WEST);
+			panelBotonesSelecMul.add(botonLimpia, BorderLayout.CENTER);
 			panelBotonesSelecMul.add(botonGuardar, BorderLayout.EAST);
 
 			/***************************************************************************/
@@ -1076,8 +1309,20 @@ public class ProfesorGUI extends JFrame {
 			JButton botonGuardar = new JButton("Guardar Pregunta");
 			botonGuardar.addActionListener(new botonGuardarVerdFalsoListener());
 
+			JButton botonLimpiar = new JButton("Limpiar casillas");
+			botonLimpiar.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					panelCreador.removeAll();
+					panelCreador.add(panelCreadorVerdaderoFalso());
+					panelCreador.updateUI();
+				}
+			});
+
 			JPanel panelBotonGuardar = new JPanel(new BorderLayout());
 			panelRespuestas.add(panelBotonGuardar, BorderLayout.SOUTH);
+
+			panelBotonGuardar.add(botonLimpiar, BorderLayout.WEST);
 			panelBotonGuardar.add(botonGuardar, BorderLayout.EAST);
 
 			/***************************************************************************/
@@ -1157,8 +1402,20 @@ public class ProfesorGUI extends JFrame {
 			botonGuardar.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			botonGuardar.addActionListener(new botonGuardarRespCorta());
 
+			JButton botonLimpiar = new JButton("Limpiar casillas");
+			botonLimpiar.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					panelCreador.removeAll();
+					panelCreador.add(panelCreadorRespuestaCorta());
+					panelCreador.updateUI();
+				}
+			});
+
 			JPanel panelBotonGuardar = new JPanel(new BorderLayout());
 			panelRespuestas.add(panelBotonGuardar, BorderLayout.SOUTH);
+
+			panelBotonGuardar.add(botonLimpiar, BorderLayout.WEST);
 			panelBotonGuardar.add(botonGuardar, BorderLayout.EAST);
 
 			/***************************************************************************/
@@ -1291,7 +1548,6 @@ public class ProfesorGUI extends JFrame {
 				} else {
 					JOptionPane.showMessageDialog(null, "Alternativas maxima alcanzada");
 				}
-
 			}
 		}
 
@@ -1365,6 +1621,8 @@ public class ProfesorGUI extends JFrame {
 					examenCreado.agregaPregunta(new Selec_Mul_Pregunta(enunciadoDeLaPregunta, alternativas,
 							indexCorrectoSelecMul, pesoDeLaPregunta));
 					totalPreguntas++;
+					contadorPreguntaSelecMul++;
+					formasExamen.setEnabled(false);
 					labelContadorTotalPreguntas.setText("Total preguntas: " + (totalPreguntas));
 					botonFinalizar.setEnabled(true);
 					grupoCorrecto.clearSelection();
@@ -1417,6 +1675,8 @@ public class ProfesorGUI extends JFrame {
 					examenCreado.agregaPregunta(
 							new TFpreguntas(enunciadoDeLaPregunta, respuestaVerdFalso, pesoDeLaPregunta));
 					totalPreguntas++;
+					contadorPreguntaVerdFals++;
+					formasExamen.setEnabled(false);
 					labelContadorTotalPreguntas.setText("Total preguntas: " + (totalPreguntas));
 					botonFinalizar.setEnabled(true);
 					vaciaTextVerFalso();
@@ -1429,7 +1689,6 @@ public class ProfesorGUI extends JFrame {
 		}
 
 		private class botonGuardarRespCorta implements ActionListener {
-
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 
@@ -1460,8 +1719,11 @@ public class ProfesorGUI extends JFrame {
 					System.out.println("resp correcta: " + respuestaRespCorta);
 					System.out.println("peso: " + pesoDeLaPregunta);
 
-					examenCreado.agregaPregunta(new Resp_Cortas_Pregunta(enunciadoDeLaPregunta, respuestaRespCorta, pesoDeLaPregunta));
+					examenCreado.agregaPregunta(
+							new Resp_Cortas_Pregunta(enunciadoDeLaPregunta, respuestaRespCorta, pesoDeLaPregunta));
 					totalPreguntas++;
+					contadorPreguntaRespCort++;
+					formasExamen.setEnabled(false);
 					labelContadorTotalPreguntas.setText("Total preguntas: " + (totalPreguntas));
 					botonFinalizar.setEnabled(true);
 					vaciaRespuestaCorta();
@@ -1494,49 +1756,64 @@ public class ProfesorGUI extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				Controlador.ConvierteExamenJson json = new ConvierteExamenJson();
-				
+
 				String direccion = "";
-				
+
 				try {
-					direccion = new File(".").getCanonicalPath() + "\\Profesor\\Examenes\\Examenes " + getProfesorName();
-					
+					direccion = new File(".").getCanonicalPath() + "\\Profesor\\Examenes\\Examenes "
+							+ getProfesorName();
+
 				} catch (IOException e) {
 					e.printStackTrace();
+				}
+				if (formasExamen.getSelectedIndex() == 1 || formasExamen.getSelectedIndex() == 2
+						|| formasExamen.getSelectedIndex() == 3) {
+					if (contadorPreguntaSelecMul < 1 || contadorPreguntaVerdFals < 1 || contadorPreguntaRespCort < 1) {
+						JOptionPane.showMessageDialog(null, "Debe agregar al menos 1 pregunta de cada tipo");
+						return;
+					}
 				}
 
 				if (examenCreado != null) {
 					if (CamposVacios()) {
 						if (activarTiempo.isSelected()) {
 							if (textTiempo == null || textTiempo.getText().isBlank()) {
-								JOptionPane.showMessageDialog(null, new JLabel("Asigne Tiempo Al Examen"),"ERROR CRITICO", JOptionPane.ERROR_MESSAGE);
+								JOptionPane.showMessageDialog(null, new JLabel("Asigne Tiempo Al Examen"),
+										"ERROR CRITICO", JOptionPane.ERROR_MESSAGE);
 								return;
-							} 
+							}
 						}
-						
-						json.guardarenArchivo(direccion+"\\"+ProfesorGUI.nombreDelArchivo, textTiempo.getText(),totalPreguntas);
-						
+						if (formasExamen.getSelectedIndex() != 0) {
+							json.guardarenArchivo(direccion + "\\" + ProfesorGUI.nombreDelArchivo, textTiempo.getText(),
+									totalPreguntas, formasExamen.getSelectedIndex());
+						} else {
+							JOptionPane.showInternalMessageDialog(null, "Seleccione forma del examen");
+						}
 						if (examenCreado.selecmulpreg != null && examenCreado.selecmulpreg.size() >= 1) {
 							for (int i = 0; i < examenCreado.selecmulpreg.size(); i++) {
-								json.guardarenArreglo(direccion, examenCreado.selecmulpreg.get(i),ProfesorGUI.nombreDelArchivo);
+								json.guardarenArreglo(direccion, examenCreado.selecmulpreg.get(i),
+										ProfesorGUI.nombreDelArchivo);
 							}
-							
+
 						}
 						if (examenCreado.tfpreg != null && examenCreado.tfpreg.size() >= 1) {
 							for (int i = 0; i < examenCreado.tfpreg.size(); i++) {
-								json.guardarenArreglo(direccion, examenCreado.tfpreg.get(i),ProfesorGUI.nombreDelArchivo);
+								json.guardarenArreglo(direccion, examenCreado.tfpreg.get(i),
+										ProfesorGUI.nombreDelArchivo);
 							}
-							
+
 						}
 						if (examenCreado.rcpreg != null && examenCreado.rcpreg.size() >= 1) {
 							for (int i = 0; i < examenCreado.rcpreg.size(); i++) {
-								json.guardarenArreglo(direccion, examenCreado.rcpreg.get(i), ProfesorGUI.nombreDelArchivo);
+								json.guardarenArreglo(direccion, examenCreado.rcpreg.get(i),
+										ProfesorGUI.nombreDelArchivo);
 							}
-							
+
 						}
-						json.guardaArregloEnArchivo(direccion+"\\"+ProfesorGUI.nombreDelArchivo);
+						json.guardaArregloEnArchivo(direccion + "\\" + ProfesorGUI.nombreDelArchivo);
 						try {
-							if(!new File(new File(".").getCanonicalPath() + "\\Profesor\\Notas\\Notas " + getProfesorName()+"\\Examen "+ProfesorGUI.nombreDelArchivo).exists()) {
-								new File(new File(".").getCanonicalPath() + "\\Profesor\\Notas\\Notas " + getProfesorName()+"\\Examen "+ProfesorGUI.nombreDelArchivo).mkdirs();
+							if (!new File(new File(".").getCanonicalPath() + "\\Profesor\\Notas\\Notas "+ getProfesorName() + "\\Notas Examen " + ProfesorGUI.nombreDelArchivo).exists()) {
+								new File(new File(".").getCanonicalPath() + "\\Profesor\\Notas\\Notas "+ getProfesorName() + "\\Notas Examen " + ProfesorGUI.nombreDelArchivo).mkdirs();
 							}
 						} catch (IOException e) {
 							e.printStackTrace();
