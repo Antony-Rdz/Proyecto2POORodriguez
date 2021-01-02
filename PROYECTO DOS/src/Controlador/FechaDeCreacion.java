@@ -10,6 +10,12 @@ import java.util.Date;
 
 public class FechaDeCreacion {
 
+	/**
+	 * Retorna la fecha de creacion de un archivo
+	 * 
+	 * @param direccion
+	 * @return
+	 */
 	public String retornaFecha(String direccion) {
 
 		File file = new File(direccion);

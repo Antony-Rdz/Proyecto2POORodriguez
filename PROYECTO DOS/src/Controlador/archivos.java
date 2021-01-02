@@ -16,8 +16,7 @@ import java.io.OutputStreamWriter;
 public class archivos {
 
 	/**
-	 * Modulo que lee el archivo donde se encuentra
-	 * la tabla de puntuaciones. 
+	 * Permite la lectura de un archivo
 	 *
 	 * @param direccion Ubicacion del archivo.
 	 */
@@ -37,6 +36,11 @@ public class archivos {
 	}
 
 
+	/**
+	 * Permite escribir la pregunta en un archivo.
+	 * @param direccion
+	 * @param pregunta
+	 */
 	public void escribirArchivo(File direccion, String pregunta) {
 
 		try {

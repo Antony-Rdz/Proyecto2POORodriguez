@@ -50,50 +50,101 @@ public class Exam {
 		rcpreg.add(PreguntaRC);
 	}
 		
+	/**
+	 * Retorna el tiempo de diracion del examen
+	 * @return
+	 */
 	public int getTiempo() {
 		return tiempo;
 	}
 
+	/**
+	 * Establece el tiempo de duracion del examen
+	 * 
+	 * @param tiempo
+	 */
 	public void setTiempo(int tiempo) {
 		this.tiempo = tiempo;
 	}
 
+	/**
+	 * retorna la cantidad de preguntas del exament
+	 * 
+	 * @return
+	 */
 	public int getTotalPreguntas() {
 		return totalPreguntas;
 	}
 
+	/**
+	 * Establece la cantidad de preguntas del examen
+	 * 
+	 * @param totalPreguntas
+	 */
 	public void setTotalPreguntas(int totalPreguntas) {
 		this.totalPreguntas = totalPreguntas;
 	}
 
+	/**
+	 * retorna el Total de preguntas seleccion Multiple
+	 * @return
+	 */
 	public int getSmTT() {
 		return smTT;
 	}
 
+	/**
+	 * establece el total de preguntas seleccion Multiple
+	 * @param smTT
+	 */
 	public void setSmTT(int smTT) {
 		this.smTT = smTT;
 	}
 
+	/**
+	 * retorna el Total de preguntas verdadero o falso
+	 * @return
+	 */
 	public int getTfTT() {
 		return tfTT;
 	}
 
+	/**
+	 * establece el total de preguntas verdadero o falso
+	 * @param tfTT
+	 */
 	public void setTfTT(int tfTT) {
 		this.tfTT = tfTT;
 	}
 
+	/**
+	 * retorna el Total de preguntas respuestas cortas
+	 * @return
+	 */
 	public int getRcTT() {
 		return rcTT;
 	}
 
+	/**
+	 * establece el total de preguntas respuestas cortas
+	 * @param rcTT
+	 */
 	public void setRcTT(int rcTT) {
 		this.rcTT = rcTT;
 	}
 
+	/**
+	 * retorna la forma del examen
+	 * @return
+	 */
 	public int getFormaExamen() {
 		return formaExamen;
 	}
 
+	/**
+	 * establece la forma del examen
+	 * @param formaExamen
+	 */
 	public void setFormaExamen(int formaExamen) {
 		this.formaExamen = formaExamen;
 	}

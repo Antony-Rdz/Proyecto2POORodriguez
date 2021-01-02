@@ -9,6 +9,13 @@ import javax.xml.bind.DatatypeConverter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+/**
+ * Transforma el archivo leido a un json y despues a un
+ * objeto Exam.
+ * 
+ * @author Antony
+ *
+ */
 public class JSONaExamen {
 	
 	StringBuilder texto = new StringBuilder();
@@ -26,8 +33,18 @@ public class JSONaExamen {
 	int numeroDeLinea = 1;
 	byte[] base64Decoded;
 
+	/**
+	 * 
+	 * Lee un archivo y genera un examen
+	 * de acuerdo a las indicaciones.
+	 * 
+	 * @param ubicacion
+	 * @return
+	 * @throws FileNotFoundException
+	 */
 	public Exam generaExamen(File ubicacion) throws FileNotFoundException {
 		Exam examen = new Exam();	
+		@SuppressWarnings("resource")
 		Scanner scan = new Scanner(ubicacion);
 		while (scan.hasNext()) {
 			String text = scan.nextLine();
@@ -65,16 +82,13 @@ public class JSONaExamen {
 		}
 		numeroDeLinea = 0;
 		
-		//System.out.println("LA FORMA DEL EXAMEN ES: "+preg.getInt("formaExamen"));
 		examen.setFormaExamen(preg.getInt("formaExamen"));
 		examen.setTiempo(preg.getInt("Tiempo"));
-		//System.out.println("total preg: "+preg.getInt("TotalPreguntas"));
 		examen.setTotalPreguntas(preg.getInt("TotalPreguntas"));
 		switch (preg.getInt("formaExamen")) {
 		case 1:
 		case 2:
 		case 3:{
-			//System.out.println("estoy antes de entrar a los for");
 			for (int i = 0; i < selmul.length(); i++) {
 				JSONArray arr = selmul.getJSONObject(i).getJSONObject("Seleccion Multiple " + (i + 1)).getJSONArray("StrRespuesta");
 				String[] alternativas = new String[arr.length()];
@@ -83,19 +97,15 @@ public class JSONaExamen {
 				}
 				examen.agregaPregunta(new Selec_Mul_Pregunta(selmul.getJSONObject(i).getJSONObject("Seleccion Multiple " + (i + 1)).getString("Enunciado"), alternativas, selmul.getJSONObject(i).getJSONObject("Seleccion Multiple " + (i + 1)).getInt("IndexCorrecto"), selmul.getJSONObject(i).getJSONObject("Seleccion Multiple " + (i + 1)).getInt("peso")));
 			}
-			//System.out.println("llegue al final de sm");
 			for (int i = 0; i < tf.length(); i++) {
 				examen.agregaPregunta(new TFpreguntas(tf.getJSONObject(i).getJSONObject("Verdadero o Falso " + (i + 1)).getString("Enunciado"), tf.getJSONObject(i).getJSONObject("Verdadero o Falso " + (i + 1)).getBoolean("Respuesta"), tf.getJSONObject(i).getJSONObject("Verdadero o Falso " + (i + 1)).getInt("Peso")));
 			}
-			//System.out.println("llegue al final de tf");
 			for (int i = 0; i < rc.length(); i++) {
 				examen.agregaPregunta(new Resp_Cortas_Pregunta(rc.getJSONObject(i).getJSONObject("Respuesta Corta " + (i + 1)).getString("Enunciado"), rc.getJSONObject(i).getJSONObject("Respuesta Corta " + (i + 1)).getString("Respuesta"), rc.getJSONObject(i).getJSONObject("Respuesta Corta " + (i + 1)).getInt("Peso")));
 			}
-			//System.out.println("llegue al final de rc y al final final");
 			return examen;
 		}
 		case 4: {
-			//System.out.println("entree al caso 4");
 			for (int i = 0; i < selmul.length(); i++) {
 				JSONArray arr = selmul.getJSONObject(i).getJSONObject("Seleccion Multiple " + (i + 1)).getJSONArray("StrRespuesta");
 				String[] alternativas = new String[arr.length()];
@@ -107,16 +117,12 @@ public class JSONaExamen {
 			return examen;
 		}
 		case 5: {
-			//System.out.println("entree al caso 5");
-			//System.out.println("tamaño de tf: "+tf.length());
-			//System.out.println("enunciado de prueba: "+tf.getJSONObject(0).getJSONObject("Verdadero o Falso " + 1).getString("Enunciado"));
 			for (int i = 0; i < tf.length(); i++) {
 				examen.agregaPregunta(new TFpreguntas(tf.getJSONObject(i).getJSONObject("Verdadero o Falso " + (i + 1)).getString("Enunciado"), tf.getJSONObject(i).getJSONObject("Verdadero o Falso " + (i + 1)).getBoolean("Respuesta"), tf.getJSONObject(i).getJSONObject("Verdadero o Falso " + (i + 1)).getInt("Peso")));
 			}
 			return examen;
 		}
 		case 6: {
-			//System.out.println("entree al caso 6");
 			for (int i = 0; i < rc.length(); i++) {
 				examen.agregaPregunta(new Resp_Cortas_Pregunta(rc.getJSONObject(i).getJSONObject("Respuesta Corta " + (i + 1)).getString("Enunciado"), rc.getJSONObject(i).getJSONObject("Respuesta Corta " + (i + 1)).getString("Respuesta"), rc.getJSONObject(i).getJSONObject("Respuesta Corta " + (i + 1)).getInt("Peso")));
 			}
@@ -126,55 +132,55 @@ public class JSONaExamen {
 			throw new IllegalArgumentException("Unexpected value: " + preg.getInt("formaExamen"));
 		}
 	}
-	public static void main(String[] args) throws FileNotFoundException {
-		//JSONObject jsoAlumno = new JSONObject("{\"puntajeUsuario\":[0,0,4],\"respuestaUsuario\":[\"sss\",\"Falso\",\"hola\"],\"respuestaExamen\":[\"ddd\",\"Verdadero\",\"hola\"],\"puntajeExamen\":[12,15,4]}");
-		//System.out.println(jsoAlumno.getJSONArray("puntajeUsuario").getInt(0));
-		JSONaExamen a = new JSONaExamen();
-		//a.generaResultadoExam(new File("C:\\Users\\Anton\\git\\Proyecto2POORodriguez\\PROYECTO DOS\\Profesor\\Notas\\Notas Gabriel Ortega\\Notas Examen examenDePruebaNUEVO\\antonio rodriguez.json"));
-		//System.out.println(a.getEstadoExamen(new File("C:\\Users\\Anton\\git\\Proyecto2POORodriguez\\PROYECTO DOS\\Profesor\\Notas\\Notas Gabriel Ortega\\Notas Examen holamundo\\antonio rodriguez.json")));
-	}
 		
+	/**
+	 * 
+	 * Genera el modelo de las notas del alumno
+	 * lo que se mostrara en la tabla de los resultados
+	 * 
+	 * @param ubicacion
+	 * @return
+	 * @throws FileNotFoundException
+	 */
 	public ModeloNotasAlumno generaResultadoExam(File ubicacion) throws FileNotFoundException{
 		ModeloNotasAlumno alumno = new ModeloNotasAlumno();
+		@SuppressWarnings("resource")
 		Scanner scan = new Scanner(ubicacion);
 		while (scan.hasNext()) {
 			String text = scan.nextLine();
+			if(!validaExamen(text)) {
+				throw new IllegalArgumentException("Archivo modificado");
+			}
 			base64Decoded = DatatypeConverter.parseBase64Binary(text);
 			String textoConvertido = new String(base64Decoded);
 			jsonAlumno = new JSONObject(textoConvertido);
-			//System.out.println(jsonAlumno.toString());
 		}
 		
 		JSONArray arr = jsonAlumno.getJSONArray("puntajeUsuario");
 		int[] puntajeA = new int[arr.length()];
 		for(int i = 0; i < arr.length(); i++) {
 			puntajeA[i] = arr.getInt(i);
-			//System.out.println(puntajeA[i] );
 		}
-		//System.out.println();
 		
 		JSONArray arr2 = jsonAlumno.getJSONArray("puntajeExamen");
 		int[] puntajeE = new int[arr2.length()];
 		for (int i = 0; i < arr2.length(); i++) {
 			puntajeE[i] = arr2.getInt(i);
-			//System.out.println(puntajeE[i]);
 		}
 		System.out.println();
 		JSONArray arr3 = jsonAlumno.getJSONArray("respuestaUsuario");
 		String[] respuestaA = new String[arr3.length()];
 		for (int i = 0; i < arr3.length(); i++) {
+			System.out.println(respuestaA[i]);
 			respuestaA[i] = arr3.getString(i);
-			//System.out.println(respuestaA[i]);
+			
 		}
-		//System.out.println();
 		
 		JSONArray arr4 = jsonAlumno.getJSONArray("respuestaExamen");
 		String[] respuestaE = new String[arr4.length()];
 		for (int i = 0; i < arr4.length(); i++) {
 			respuestaE[i] = arr4.getString(i);
-			//System.out.println(respuestaE[i]);
 		}
-		//System.out.println();
 		
 		alumno.setPuntajeAlumno(puntajeA);
 		alumno.setPuntajeExamen(puntajeE);
@@ -184,10 +190,24 @@ public class JSONaExamen {
 		return alumno;
 	}
 	
+	/**
+	 * 
+	 * retorna el estado del examen
+	 * el cual permitira realizar
+	 * el examen de la manera correcta
+	 * 
+	 * @param ubicacion
+	 * @return
+	 * @throws FileNotFoundException
+	 */
 	public String getEstadoExamen(File ubicacion) throws FileNotFoundException {
+		@SuppressWarnings("resource")
 		Scanner scan = new Scanner(ubicacion);
 		while (scan.hasNext()) {
 			String text = scan.nextLine();
+			if(!validaExamen(text)) {
+				throw new IllegalArgumentException("Archivo modificado");
+			}
 			base64Decoded = DatatypeConverter.parseBase64Binary(text);
 			String textoConvertido = new String(base64Decoded);
 			jsonAlumno = new JSONObject(textoConvertido);
@@ -196,6 +216,12 @@ public class JSONaExamen {
 	}
 	
 	
+	/**
+	 * valida que un archivo no halla sido modificaado
+	 * 
+	 * @param examen
+	 * @return
+	 */
 	public static boolean validaExamen(String examen) {
 		return examen.matches("^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$");
 

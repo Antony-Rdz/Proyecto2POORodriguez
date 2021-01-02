@@ -35,6 +35,16 @@ public class ConvierteExamenJson {
 	int totalPreguntasVerdFals = 1;
 	int totalPreguntasRespCort = 1;
 
+	/**
+	 * 
+	 * Guarda la informacion del examen, el tiempo, el total de preguntas 
+	 * y la forma de este en el archivo
+	 * 
+	 * @param direccion
+	 * @param Tiempo
+	 * @param totalPreguntas
+	 * @param formaExamen
+	 */
 	public void guardarenArchivo(String direccion, String Tiempo,int totalPreguntas,int formaExamen) {
 		archivos = new archivos();
 		Pregunta = new JSONObject();
@@ -54,8 +64,15 @@ public class ConvierteExamenJson {
 		archivos.escribirArchivo(new File(direccion+".json"), codificado);
 	}
 	
+	/**
+	 * Guarda la pregunta en un arreglo json para despues guardarla en 
+	 * un archivo.
+	 * 
+	 * @param direccion
+	 * @param pregunta
+	 * @param nombreDelArchivo
+	 */
 	public void guardarenArreglo(String direccion, Selec_Mul_Pregunta pregunta, String nombreDelArchivo) {
-		//archivos = new archivos();
 		Pregunta = new JSONObject();
 		selecMult = new JSONObject();
 		alternativasSelecMul = new JSONArray();
@@ -76,8 +93,15 @@ public class ConvierteExamenJson {
 		totalPreguntasSelecMul++;
 	}
 
+	/**
+	 * Guarda la pregunta en un arreglo json para despues guardarla en 
+	 * un archivo.
+	 * 
+	 * @param direccion
+	 * @param pregunta
+	 * @param nombreDelArchivo
+	 */
 	public void guardarenArreglo(String direccion, TFpreguntas pregunta, String nombreDelArchivo) {
-		//archivos = new archivos();
 		Pregunta = new JSONObject();
 		verdFalso = new JSONObject();
 
@@ -90,8 +114,14 @@ public class ConvierteExamenJson {
 		totalPreguntasVerdFals++;
 	}
 
+	/**
+	 * Guarda la pregunta en un arreglo json para despues guardarla en 
+	 * un archivo.
+	 * @param direccion
+	 * @param pregunta
+	 * @param nombreDelArchivo
+	 */
 	public void guardarenArreglo(String direccion, Resp_Cortas_Pregunta pregunta, String nombreDelArchivo) {
-		//archivos = new archivos();
 		Pregunta = new JSONObject();
 		respCorta = new JSONObject();
 
@@ -104,6 +134,12 @@ public class ConvierteExamenJson {
 		totalPreguntasRespCort++;
 	}
 	
+	/**
+	 * 
+	 * Guarda en un archivo todas las preguntas generadas posteriormente con los "guardaenArreglo()"
+	 * 
+	 * @param direccion
+	 */
 	public void guardaArregloEnArchivo(String direccion) {
 		bytes = SM.toString().getBytes();
 		codificado = DatatypeConverter.printBase64Binary(bytes);
@@ -118,6 +154,17 @@ public class ConvierteExamenJson {
 		archivos.escribirArchivo(new File(direccion+".json"), codificado);
 	}
 
+	/**
+	 * 
+	 * Guarda la nota de cada alumno que da el examen
+	 * en earchivos unitarios con su respectivo nombre
+	 * 
+	 * @param notas
+	 * @param notasExam
+	 * @param respuestasUsuario
+	 * @param respuestasExam
+	 * @param direccion
+	 */
 	public void guardaNotasAlumno(int[]notas,int[]notasExam, String[]respuestasUsuario,String[]respuestasExam,String direccion) {
 		archivos = new archivos();	
 		resultadoAlumno = new JSONObject();
@@ -147,82 +194,6 @@ public class ConvierteExamenJson {
 		
 		bytes = resultadoAlumno.toString().getBytes();
 		codificado = DatatypeConverter.printBase64Binary(bytes);
-		//System.out.println("Guardo en dir: "+direccion);
 		archivos.escribirArchivo(new File(direccion+".json"), codificado);
 	}
-	
-	/*public void guardaTotalPreguntasSM(String direccion, ArrayList<Selec_Mul_Pregunta> pregunta) {
-		archivos = new archivos();
-		Pregunta = new JSONObject();
-		
-		Pregunta.put("TotalSM", pregunta.size());
-		archivos.escribirArchivo(new File(direccion+".json"), Pregunta.toString());
-	}
-	
-	public void guardaTotalPreguntasTF(String direccion, ArrayList<TFpreguntas> pregunta) {
-		archivos = new archivos();
-		Pregunta = new JSONObject();
-		
-		Pregunta.put("TotalTF", pregunta.size());
-		archivos.escribirArchivo(new File(direccion+".json"), Pregunta.toString());
-		
-	}
-	
-	public void guardaTotalPreguntasRC(String direccion, ArrayList<Resp_Cortas_Pregunta> pregunta) {
-		archivos = new archivos();
-		Pregunta = new JSONObject();
-		
-		Pregunta.put("TotalRC", pregunta.size());
-		archivos.escribirArchivo(new File(direccion+".json"), Pregunta.toString());
-	}*/
-	
-	/*public static void main(String[] args) {
-	JSONObject preg = new JSONObject("{\"Tiempo\":50,\"TotalPreguntas\":12}");
-	JSONObject smtt = new JSONObject("{\"TotalSM\":5}");
-	JSONObject tftt = new JSONObject("{\"TotalTF\":4}");
-	JSONObject rctt = new JSONObject("{\"TotalRC\":3}");
-	JSONArray selmul = new JSONArray("[{\"Seleccion Multiple 1\":{\"Enunciado\":\"direccion+\\\"\\\\\\\\\\\"+ProfesorGUI.nombreDelArchivo\",\"IndexCorrecto\":0,\"StrRespuesta\":[\"sadfsad\",\"asdfasdf\",\"asdfs\"],\"peso\":12,\"RespCorrecta\":\"sadfsad\"}},{\"Seleccion Multiple 2\":{\"Enunciado\":\"dfsgfdg\",\"IndexCorrecto\":0,\"StrRespuesta\":[\"sdfgsdfg\",\"sdfgsdfg\",\"sdfgsdfg\"],\"peso\":2,\"RespCorrecta\":\"sdfgsdfg\"}},{\"Seleccion Multiple 3\":{\"Enunciado\":\"sdfgdfsgsdf\",\"IndexCorrecto\":2,\"StrRespuesta\":[\"sdfgsdfg\",\"dsfgsdfgdsfg\",\"dfgsdfg\"],\"peso\":2,\"RespCorrecta\":\"dfgsdfg\"}},{\"Seleccion Multiple 4\":{\"Enunciado\":\"jhtgjhtyjkyu\",\"IndexCorrecto\":0,\"StrRespuesta\":[\"tyuityi\",\"yuityui\",\"uytui\"],\"peso\":2,\"RespCorrecta\":\"tyuityi\"}},{\"Seleccion Multiple 5\":{\"Enunciado\":\"hgfjhgn\",\"IndexCorrecto\":4,\"StrRespuesta\":[\"gfngfhn\",\"fghngfnghn\",\"gfhnkloi\",\"sdfgsdfg\",\"dsgfsdfg\"],\"peso\":2,\"RespCorrecta\":\"dsgfsdfg\"}}]");
-	JSONArray tf = new JSONArray("[{\"Verdadero o Falso 1\":{\"Enunciado\":\"gsdfgdsfg\",\"Peso\":2,\"Respuesta\":true}},{\"Verdadero o Falso 2\":{\"Enunciado\":\"sdfgdshf\",\"Peso\":3,\"Respuesta\":true}},{\"Verdadero o Falso 3\":{\"Enunciado\":\"jhkhgjkuyi\",\"Peso\":3,\"Respuesta\":false}},{\"Verdadero o Falso 4\":{\"Enunciado\":\"iou\",\"Peso\":2,\"Respuesta\":true}}]");
-	JSONArray rc = new JSONArray("[{\"Respuesta Corta 1\":{\"Enunciado\":\"dgsfsdfg\",\"Peso\":1,\"Respuesta\":\"sdfgsdfg\"}},{\"Respuesta Corta 2\":{\"Enunciado\":\"sdfgsdfg\",\"Peso\":3,\"Respuesta\":\"dsgfsdfg\"}},{\"Respuesta Corta 3\":{\"Enunciado\":\"ghjgfjg\",\"Peso\":2,\"Respuesta\":\"ghfjgfh\"}}]");
-	
-	System.out.println("tiempo "+preg.getInt("Tiempo"));
-	System.out.println("totalPreg "+preg.getInt("TotalPreguntas"));
-	
-	System.out.println("smtt: "+smtt.getInt("TotalSM"));
-	System.out.println("tftt: "+tftt.getInt("TotalTF"));
-	System.out.println("rctt: "+rctt.getInt("TotalRC"));
-	
-	System.out.println("Selec Multi:");
-	for (int i = 0; i < selmul.length(); i++) {
-		System.out.println("enunciado: "+selmul.getJSONObject(i).getJSONObject("Seleccion Multiple "+(i+1)).getString("Enunciado"));
-		System.out.println("index: "+selmul.getJSONObject(i).getJSONObject("Seleccion Multiple "+(i+1)).getInt("IndexCorrecto"));
-		JSONArray arr = selmul.getJSONObject(i).getJSONObject("Seleccion Multiple "+(i+1)).getJSONArray("StrRespuesta");
-		System.out.println("Opciones:");
-		for (int j = 0; j < arr.length(); j++) {
-			System.out.println(arr.getString(j));
-		}
-		System.out.println("peso: "+selmul.getJSONObject(i).getJSONObject("Seleccion Multiple "+(i+1)).getInt("peso"));
-		System.out.println("RespCorrecta: "+selmul.getJSONObject(i).getJSONObject("Seleccion Multiple "+(i+1)).getString("RespCorrecta"));
-		System.out.println("\n");
-	}	
-	System.out.println("\n");
-	
-	System.out.println("verdadero falso:");
-	for (int i = 0; i < tf.length(); i++) {
-		System.out.println("enunciado: "+tf.getJSONObject(i).getJSONObject("Verdadero o Falso "+(i+1)).getString("Enunciado"));
-		System.out.println("respuesta: "+tf.getJSONObject(i).getJSONObject("Verdadero o Falso "+(i+1)).getBoolean("Respuesta"));
-		System.out.println("respuesta: "+tf.getJSONObject(i).getJSONObject("Verdadero o Falso "+(i+1)).getInt("Peso"));
-		System.out.println("\n");
-	}
-	System.out.println("\n");
-	
-	System.out.println("Respuesta Corta:");
-	for (int i = 0; i < rc.length(); i++) {
-		System.out.println("enunciado: "+rc.getJSONObject(i).getJSONObject("Respuesta Corta "+(i+1)).getString("Enunciado"));
-		System.out.println("respuesta: "+rc.getJSONObject(i).getJSONObject("Respuesta Corta "+(i+1)).getString("Respuesta"));
-		System.out.println("respuesta: "+rc.getJSONObject(i).getJSONObject("Respuesta Corta "+(i+1)).getInt("Peso"));
-		System.out.println("\n");
-	}
-	System.out.println("\n");	
-}*/
 }

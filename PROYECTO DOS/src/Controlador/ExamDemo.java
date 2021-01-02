@@ -41,10 +41,5 @@ public class ExamDemo {
 		
 		return examen;
 		
-	}
-	
-	
-	
-		
-		
+	}	
 }

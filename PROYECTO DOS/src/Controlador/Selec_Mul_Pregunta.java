@@ -32,12 +32,10 @@ public class Selec_Mul_Pregunta extends Pregunta {
 	 * correcta y "false" si es incorrecta.
 	 */
 	@Override
+	@Deprecated
 	public boolean buscar() {
-		// TODO Auto-generated method stub
 		return false;
-	}
-	/*public boolean buscar() {
-		int aux_numero = 65; // Letra "A" en la tabla ascii
+		/*int aux_numero = 65; // Letra "A" en la tabla ascii
 		char opcionCorrecta = '\0'; // Variable donde se almacenara la letra generada.
 		char[] rango = new char[getTamanio_arreglo()];// arreglo que almacena el rango de las opciones.
 
@@ -81,25 +79,8 @@ public class Selec_Mul_Pregunta extends Pregunta {
 			System.out.println("INCORRECTO, la opcion correcta era " + opcionCorrecta + "\n");
 			Exam.preg_malas++;
 			return false;
-		}
-	}*/
-
-	/**
-	 * Verifica que la opcion ingresada por el usuario esté dentro del rango de las
-	 * alternativas.
-	 * 
-	 * @param rango         Letras disponibles para la respuesta.
-	 * @param OpcionUsuario Letra ingresada por usuario.
-	 * @return boolean
-	 */
-	/*private boolean verifica_rango(char[] rango, char OpcionUsuario) {
-		for (int i = 0; i < rango.length; i++) {
-			if (OpcionUsuario == rango[i]) {
-				return true;
-			}
-		}
-		return false;
-	}*/
+		}*/
+	}
 
 	/**
 	 * Setea un arreglo de posibles respuestas.
@@ -157,12 +138,7 @@ public class Selec_Mul_Pregunta extends Pregunta {
 	}
 	
 	public String getRespuestaCorecta() {
-		for(int i = 0; i < opciones.length; i++) {
-			if(i == index_respuesta) {
-				return opciones[i];
-			}
-		}
-		return null;
+		return opciones[index_respuesta];
 	}
 }
 

@@ -27,6 +27,7 @@ public abstract class Pregunta {
 	 * 
 	 * @return boolean
 	 */
+	@Deprecated
 	public abstract boolean buscar();
 
 	/**

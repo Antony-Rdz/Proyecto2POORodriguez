@@ -28,12 +28,10 @@ public class Resp_Cortas_Pregunta extends Pregunta {
 	 * correcta y "false" si es incorrecta.
 	 */
 	@Override
+	@Deprecated
 	public boolean buscar() {
-		// TODO Auto-generated method stub
 		return false;
-	}
-	/*public boolean buscar() {
-		System.out.print(getEnunciado() + ": ");
+		/*System.out.print(getEnunciado() + ": ");
 		if (getRespuestaCorta().equalsIgnoreCase(complementos.leerDeTeclado())) {
 			System.out.println("CORRECTO\n");
 			Exam.preg_buenas++;
@@ -42,8 +40,8 @@ public class Resp_Cortas_Pregunta extends Pregunta {
 			System.err.println("INCORRECTA, la opcion correcta era " + getRespuestaCorta() + "\n");
 			Exam.preg_malas++;
 			return false;
-		}
-	}*/
+		}*/
+	}
 
 	/**
 	 * Devuelve la respuesta correcta.

@@ -22,7 +22,8 @@ import javax.swing.tree.TreePath;
 public class FileSystemModel implements TreeModel {
 
     private File root;
-    private Vector listeners = new Vector();
+    @SuppressWarnings("rawtypes")
+	private Vector listeners = new Vector();
 
     public FileSystemModel(File rootDirectory) {
         root = rootDirectory;
@@ -100,7 +101,8 @@ public class FileSystemModel implements TreeModel {
 
     private void fireTreeNodesChanged(TreePath parentPath, int[] indices, Object[] children) {
         TreeModelEvent event = new TreeModelEvent(this, parentPath, indices, children);
-        Iterator iterator = listeners.iterator();
+        @SuppressWarnings("rawtypes")
+		Iterator iterator = listeners.iterator();
         TreeModelListener listener = null;
         while (iterator.hasNext()) {
             listener = (TreeModelListener) iterator.next();
@@ -108,7 +110,8 @@ public class FileSystemModel implements TreeModel {
         }
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public void addTreeModelListener(TreeModelListener listener) {
         listeners.add(listener);
     }
@@ -118,7 +121,8 @@ public class FileSystemModel implements TreeModel {
         listeners.remove(listener);
     }
 
-    private class TreeFile extends File {
+    @SuppressWarnings("serial")
+	private class TreeFile extends File {
 
         public TreeFile(File parent, String child) {
             super(parent, child);
